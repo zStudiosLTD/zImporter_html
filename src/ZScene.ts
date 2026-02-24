@@ -156,7 +156,8 @@ export class ZScene {
         const stageEl = this._sceneStage.el;
         stageEl.style.position = 'absolute';
         stageEl.style.transformOrigin = '0 0';
-        stageEl.style.overflow = 'hidden';
+        // Do NOT set overflow:hidden here — fullscreen backgrounds need to
+        // bleed past the stage bounds to cover the whole viewport.
 
         this.resize(window.innerWidth, window.innerHeight);
 
@@ -212,12 +213,12 @@ export class ZScene {
         stageEl.style.transform =
             `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
 
-        // mirror on the ZContainer for ZContainer.scale / position reads
-        this._sceneStage.scaleX = scale;
-        this._sceneStage.scaleY = scale;
-
         for (const [mc] of this.resizeMap) {
-            mc.resize(width, height, this.orientation);
+            if (mc._fitToScreen) {
+                mc.executeFitToScreen(width, height, offsetX, offsetY, scale);
+            } else {
+                mc.resize(width, height, this.orientation);
+            }
         }
     }
 
@@ -375,7 +376,16 @@ export class ZScene {
             div.style.backgroundRepeat = 'no-repeat';
             div.style.backgroundSize = `${bgW}px ${bgH}px`;
             div.style.backgroundPosition = `${bgX}px ${bgY}px`;
-            div.dataset.frameName = frameName;
+            div.dataset.frameName   = frameName;
+            // Store the raw atlas values so executeFitToScreen can recompute
+            // the background-size/position when the container is stretched to
+            // fill the viewport at a different size.
+            div.dataset.atlasFrameX = String(atlasFrame.x);
+            div.dataset.atlasFrameY = String(atlasFrame.y);
+            div.dataset.atlasFrameW = String(atlasFrame.w);
+            div.dataset.atlasFrameH = String(atlasFrame.h);
+            div.dataset.atlasTotalW = String(this.atlasSize.w);
+            div.dataset.atlasTotalH = String(this.atlasSize.h);
             return div;
         }
 

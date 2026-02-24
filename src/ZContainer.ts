@@ -257,6 +257,80 @@ export class ZContainer {
         this.applyTransform();
     }
 
+    /**
+     * Stretches this container to visually cover the entire browser viewport.
+     * Mirrors PIXI's `executeFitToScreen` — positions the container at the
+     * viewport's top-left (expressed in stage / scene-unit coords) and scales
+     * the first child image element to fill the viewport dimensions.
+     *
+     * @param viewportW   - Current browser viewport width in CSS pixels.
+     * @param viewportH   - Current browser viewport height in CSS pixels.
+     * @param stageOffsetX - CSS-pixel X offset of the scaled stage from the viewport edge.
+     * @param stageOffsetY - CSS-pixel Y offset of the scaled stage from the viewport edge.
+     * @param stageScale   - Uniform CSS scale applied to the stage.
+     */
+    public executeFitToScreen(
+        viewportW: number,
+        viewportH: number,
+        stageOffsetX: number,
+        stageOffsetY: number,
+        stageScale: number
+    ): void {
+        // Place this container so its (0,0) is at the viewport's top-left,
+        // expressed in scene-unit coordinates.
+        this._x = -stageOffsetX / stageScale;
+        this._y = -stageOffsetY / stageScale;
+        this._pivotX = 0;
+        this._pivotY = 0;
+        this._scaleX = 1;
+        this._scaleY = 1;
+        this._rotation = 0;
+        this._applyTransform();
+
+        const firstChild = this.el.firstElementChild as HTMLElement | null;
+        if (!firstChild) return;
+
+        // Get the frame's natural (authored) dimensions.
+        let frameW: number;
+        let frameH: number;
+        if (firstChild.dataset.atlasFrameW) {
+            frameW = parseFloat(firstChild.dataset.atlasFrameW!);
+            frameH = parseFloat(firstChild.dataset.atlasFrameH!);
+        } else {
+            const img = firstChild as HTMLImageElement;
+            frameW = img.naturalWidth  || parseFloat(firstChild.style.width)  || viewportW / stageScale;
+            frameH = img.naturalHeight || parseFloat(firstChild.style.height) || viewportH / stageScale;
+        }
+
+        // Viewport in scene units.
+        const vpW = viewportW / stageScale;
+        const vpH = viewportH / stageScale;
+
+        // "Cover" uniform scale: the image fills the viewport with no gaps,
+        // overflowing on the shorter axis.  Center the overflow.
+        const coverScale = Math.max(vpW / frameW, vpH / frameH);
+        const displayW   = frameW * coverScale;
+        const displayH   = frameH * coverScale;
+        const imgLeft    = (vpW - displayW) / 2;
+        const imgTop     = (vpH - displayH) / 2;
+
+        firstChild.style.width  = displayW + 'px';
+        firstChild.style.height = displayH + 'px';
+        firstChild.style.left   = imgLeft + 'px';
+        firstChild.style.top    = imgTop  + 'px';
+
+        // Atlas CSS-sprite: recompute background-size / position with the
+        // uniform coverScale so the frame crops correctly.
+        if (firstChild.dataset.atlasFrameW) {
+            const fx = parseFloat(firstChild.dataset.atlasFrameX!);
+            const fy = parseFloat(firstChild.dataset.atlasFrameY!);
+            const tw = parseFloat(firstChild.dataset.atlasTotalW!);
+            const th = parseFloat(firstChild.dataset.atlasTotalH!);
+            firstChild.style.backgroundSize     = `${tw * coverScale}px ${th * coverScale}px`;
+            firstChild.style.backgroundPosition = `${-fx * coverScale}px ${-fy * coverScale}px`;
+        }
+    }
+
     public applyTransform(): void {
         if (!this.currentTransform || !this.resizeable) return;
 

@@ -84,6 +84,19 @@ export declare class ZContainer {
      */
     private _applyTransform;
     setInstanceData(data: InstanceData, orientation: string): void;
+    /**
+     * Stretches this container to visually cover the entire browser viewport.
+     * Mirrors PIXI's `executeFitToScreen` — positions the container at the
+     * viewport's top-left (expressed in stage / scene-unit coords) and scales
+     * the first child image element to fill the viewport dimensions.
+     *
+     * @param viewportW   - Current browser viewport width in CSS pixels.
+     * @param viewportH   - Current browser viewport height in CSS pixels.
+     * @param stageOffsetX - CSS-pixel X offset of the scaled stage from the viewport edge.
+     * @param stageOffsetY - CSS-pixel Y offset of the scaled stage from the viewport edge.
+     * @param stageScale   - Uniform CSS scale applied to the stage.
+     */
+    executeFitToScreen(viewportW: number, viewportH: number, stageOffsetX: number, stageOffsetY: number, stageScale: number): void;
     applyTransform(): void;
     private _applyAnchor;
     private _getStageScale;
