@@ -122,7 +122,7 @@ export class ZScene {
     }
     async _loadBitmapFont(fontName) {
         try {
-            const fntUrl = this.assetBasePath + fontName + '.fnt?rnd=' + Math.random();
+            const fntUrl = this.assetBasePath + "bitmapFonts/" + fontName + '.fnt?rnd=' + Math.random();
             const res = await fetch(fntUrl);
             if (!res.ok)
                 return;
@@ -146,7 +146,7 @@ export class ZScene {
             await new Promise(resolve => {
                 img.onload = () => resolve();
                 img.onerror = () => resolve();
-                img.src = this.assetBasePath + fontName + '.png?rnd=' + Math.random();
+                img.src = this.assetBasePath + "bitmapFonts/" + fontName + '.png?rnd=' + Math.random();
             });
             this.bitmapFonts[fontName] = { img, lineHeight, chars };
         }

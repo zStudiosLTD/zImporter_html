@@ -162,7 +162,7 @@ export class ZScene {
 
     private async _loadBitmapFont(fontName: string): Promise<void> {
         try {
-            const fntUrl = this.assetBasePath + fontName + '.fnt?rnd=' + Math.random();
+            const fntUrl = this.assetBasePath + "bitmapFonts/" + fontName + '.fnt?rnd=' + Math.random();
             const res = await fetch(fntUrl);
             if (!res.ok) return;
             const xml = await res.text();
@@ -189,7 +189,7 @@ export class ZScene {
             await new Promise<void>(resolve => {
                 img.onload = () => resolve();
                 img.onerror = () => resolve();
-                img.src = this.assetBasePath + fontName + '.png?rnd=' + Math.random();
+                img.src = this.assetBasePath + "bitmapFonts/" + fontName + '.png?rnd=' + Math.random();
             });
 
             this.bitmapFonts[fontName] = { img, lineHeight, chars };
