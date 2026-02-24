@@ -376,7 +376,7 @@ export class ZScene {
             div.style.backgroundRepeat = 'no-repeat';
             div.style.backgroundSize = `${bgW}px ${bgH}px`;
             div.style.backgroundPosition = `${bgX}px ${bgY}px`;
-            div.dataset.frameName   = frameName;
+            div.dataset.frameName = frameName;
             // Store the raw atlas values so executeFitToScreen can recompute
             // the background-size/position when the container is stretched to
             // fill the viewport at a different size.
@@ -394,7 +394,7 @@ export class ZScene {
         img.style.userSelect = 'none';
         img.draggable = false;
         if (data.filePath) {
-            const cleanPath = data.filePath.replace(/^\.\//,'');
+            const cleanPath = data.filePath.replace(/^\.\//, '');
             img.src = this.assetBasePath + cleanPath;
         }
         return img;

@@ -298,7 +298,7 @@ export class ZContainer {
             frameH = parseFloat(firstChild.dataset.atlasFrameH!);
         } else {
             const img = firstChild as HTMLImageElement;
-            frameW = img.naturalWidth  || parseFloat(firstChild.style.width)  || viewportW / stageScale;
+            frameW = img.naturalWidth || parseFloat(firstChild.style.width) || viewportW / stageScale;
             frameH = img.naturalHeight || parseFloat(firstChild.style.height) || viewportH / stageScale;
         }
 
@@ -309,15 +309,15 @@ export class ZContainer {
         // "Cover" uniform scale: the image fills the viewport with no gaps,
         // overflowing on the shorter axis.  Center the overflow.
         const coverScale = Math.max(vpW / frameW, vpH / frameH);
-        const displayW   = frameW * coverScale;
-        const displayH   = frameH * coverScale;
-        const imgLeft    = (vpW - displayW) / 2;
-        const imgTop     = (vpH - displayH) / 2;
+        const displayW = frameW * coverScale;
+        const displayH = frameH * coverScale;
+        const imgLeft = (vpW - displayW) / 2;
+        const imgTop = (vpH - displayH) / 2;
 
-        firstChild.style.width  = displayW + 'px';
+        firstChild.style.width = displayW + 'px';
         firstChild.style.height = displayH + 'px';
-        firstChild.style.left   = imgLeft + 'px';
-        firstChild.style.top    = imgTop  + 'px';
+        firstChild.style.left = imgLeft + 'px';
+        firstChild.style.top = imgTop + 'px';
 
         // Atlas CSS-sprite: recompute background-size / position with the
         // uniform coverScale so the frame crops correctly.
@@ -326,7 +326,7 @@ export class ZContainer {
             const fy = parseFloat(firstChild.dataset.atlasFrameY!);
             const tw = parseFloat(firstChild.dataset.atlasTotalW!);
             const th = parseFloat(firstChild.dataset.atlasTotalH!);
-            firstChild.style.backgroundSize     = `${tw * coverScale}px ${th * coverScale}px`;
+            firstChild.style.backgroundSize = `${tw * coverScale}px ${th * coverScale}px`;
             firstChild.style.backgroundPosition = `${-fx * coverScale}px ${-fy * coverScale}px`;
         }
     }
