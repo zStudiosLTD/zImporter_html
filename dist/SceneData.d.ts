@@ -1,3 +1,56 @@
+export interface BoxStroke {
+    color?: number;
+    width?: number;
+    alpha?: number;
+}
+export interface InputBoxStyle {
+    fill: number;
+    rounded?: number;
+    stroke?: BoxStroke;
+}
+export interface InputParams {
+    fontFamily: string;
+    fontSize: string;
+    padding: string;
+    width: string;
+    color: string | number;
+    fontWeight?: string;
+    textAlign: string;
+    textIndent?: string;
+    lineHeight?: string;
+}
+export interface TextInputObj {
+    input: InputParams;
+    box: {
+        default: InputBoxStyle;
+        focused: InputBoxStyle;
+        disabled: InputBoxStyle;
+    };
+}
+export interface TextInputData extends BaseAssetData {
+    x: number;
+    y: number;
+    text: string;
+    props: TextInputObj;
+}
+export interface SpineData extends BaseAssetData {
+    name: string;
+    spineJson: string;
+    spineAtlas: string;
+    pngFiles: string[];
+    animations: string[];
+    skin?: string;
+    playOnStart?: {
+        value: boolean;
+        animation: string;
+    };
+}
+export interface ParticleData extends BaseAssetData {
+    jsonPath: string;
+    pngPaths: string[];
+    name: string;
+    emitterConfig: any;
+}
 export declare enum AnchorConsts {
     NONE = "none",
     TOP_LEFT = "topLeft",

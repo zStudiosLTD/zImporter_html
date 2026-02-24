@@ -1,3 +1,5 @@
+// ── Input field types ─────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 export var AnchorConsts;
 (function (AnchorConsts) {
     AnchorConsts["NONE"] = "none";

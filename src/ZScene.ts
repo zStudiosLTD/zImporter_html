@@ -1,9 +1,14 @@
 import { ZButton } from './ZButton';
 import { ZContainer } from './ZContainer';
 import { ZTimeline } from './ZTimeline';
+import { ZNineSlice } from './ZNineSlice';
+import { ZScroll } from './ZScroll';
+import { ZSlider } from './ZSlider';
+import { ZTextInput } from './ZTextInput';
+import { ZSpine } from './ZSpine';
 import {
     AnimTrackData, BaseAssetData, GradientData, InstanceData, NineSliceData,
-    SceneData, SpriteData, TemplateData, TextData
+    SceneData, SpineData, SpriteData, TemplateData, TextData, TextInputData
 } from './SceneData';
 
 interface BitmapFontChar {
@@ -39,8 +44,8 @@ export class ZScene {
         ['asset', ZContainer],
         ['state', ZState],
         ['toggle', ZToggle],
-        ['slider', ZContainer],   // sliders rendered as plain containers for now
-        ['scrollBar', ZContainer],
+        ['slider', ZSlider],
+        ['scrollBar', ZScroll],
         ['fullScreen', ZContainer],
         ['animation', ZTimeline],
     ]);
@@ -465,10 +470,11 @@ export class ZScene {
             // ── 2. Nine-slice ────────────────────────────────────────────────
             else if (type === '9slice') {
                 const nsData = childNode as NineSliceData;
-                const wrapper = this._createNineSliceElement(nsData);
-                wrapper.id = _name;
-                (mc as any)[_name.replace(/_9S$/, '')] = wrapper;
-                mc.el.appendChild(wrapper);
+                const ns = new ZNineSlice(nsData, this.orientation, this.assetBasePath);
+                ns.name = _name.replace(/_9S$/, '');
+                (mc as any)[ns.name] = ns;
+                mc.addChild(ns);
+                this.addToResizeMap(ns);
             }
 
             // ── 3. Text / bitmap text ─────────────────────────────────────────
@@ -518,9 +524,42 @@ export class ZScene {
                 asset.init();
             }
 
-            // ── 5. Spine / particle — not supported in HTML ──────────────────
-            else if (type === 'spine' || type === 'particle') {
-                console.warn(`[ZScene] ${type} assets are not supported in the HTML renderer.`);
+            // ── 5. Input field ────────────────────────────────────────────────
+            else if (type === 'inputField') {
+                const inputData = childNode as TextInputData;
+                const textInput = new ZTextInput(inputData);
+                textInput.name = _name;
+                textInput.x = inputData.x || 0;
+                textInput.y = inputData.y || 0;
+                (mc as any)[_name] = textInput;
+                mc.addChild(textInput);
+                this.addToResizeMap(textInput);
+            }
+
+            // ── 6. Spine ──────────────────────────────────────────────────────
+            else if (type === 'spine') {
+                const spineData = childNode as SpineData;
+                const spineObj = new ZSpine();
+                spineObj.name = _name;
+                (mc as any)[_name] = spineObj;
+                mc.addChild(spineObj);
+                this.addToResizeMap(spineObj);
+                spineObj.load(
+                    this.assetBasePath,
+                    spineData.spineJson,
+                    spineData.spineAtlas,
+                    spineData.pngFiles ?? [],
+                    spineData.skin ?? 'default',
+                ).then(() => {
+                    if (spineData.playOnStart?.value) {
+                        spineObj.play(spineData.playOnStart.animation, true);
+                    }
+                });
+            }
+
+            // ── 7. Particle — not supported in HTML ───────────────────────────
+            else if (type === 'particle') {
+                console.warn('[ZScene] particle assets are not supported in the HTML renderer.');
             }
 
             // ── Check for a child template (for non-asset-type children) ─────
@@ -588,46 +627,7 @@ export class ZScene {
         return img;
     }
 
-    private _createNineSliceElement(data: NineSliceData): HTMLDivElement {
-        const div = document.createElement('div');
-        div.style.position = 'absolute';
-        div.style.left = (data.x || 0) + 'px';
-        div.style.top = (data.y || 0) + 'px';
 
-        // Use CSS border-image for 9-slice
-        const src = this.assetBasePath + (data.filePath || '');
-        const { top: t, right: r, bottom: b, left: l } = data;
-        const origW = data.origWidth || data.width || 100;
-        const origH = data.origHeight || data.height || 100;
-
-        // Use landscape as the initial size (matches previous behaviour).
-        // Portrait dimensions are stored as data-attributes so ZContainer.resize()
-        // can switch them when the orientation changes.
-        const lW = data.landscape?.width ?? data.width ?? origW;
-        const lH = data.landscape?.height ?? data.height ?? origH;
-        const pW = data.portrait?.width ?? lW;
-        const pH = data.portrait?.height ?? lH;
-
-        div.style.width = lW + 'px';
-        div.style.height = lH + 'px';
-
-        // Mark as 9-slice and cache per-orientation dimensions.
-        div.dataset.ns = '1';
-        div.dataset.portraitW = String(pW);
-        div.dataset.portraitH = String(pH);
-        div.dataset.landscapeW = String(lW);
-        div.dataset.landscapeH = String(lH);
-
-        if (src && t != null) {
-            div.style.borderImage = `url(${src}) ${t} ${r} ${b} ${l} fill / ${t}px ${r}px ${b}px ${l}px`;
-        } else if (src) {
-            div.style.backgroundImage = `url(${src})`;
-            div.style.backgroundSize = '100% 100%';
-        }
-
-        div.dataset.name = data.name;
-        return div;
-    }
 
     private _createTextElement(data: TextData): ZContainer {
         const wrapper = new ZContainer();

@@ -378,21 +378,6 @@ export class ZContainer {
     resize(width, height, orientation) {
         this.currentTransform = orientation === 'portrait' ? this.portrait : this.landscape;
         this.applyTransform();
-        // Update any 9-slice child divs to the correct dimensions for this orientation.
-        for (const child of Array.from(this.el.children)) {
-            if (child.dataset?.ns !== '1')
-                continue;
-            const w = orientation === 'portrait'
-                ? child.dataset.portraitW
-                : child.dataset.landscapeW;
-            const h = orientation === 'portrait'
-                ? child.dataset.portraitH
-                : child.dataset.landscapeH;
-            if (w)
-                child.style.width = w + 'px';
-            if (h)
-                child.style.height = h + 'px';
-        }
     }
     isAnchored() {
         return !!(this.currentTransform?.isAnchored);

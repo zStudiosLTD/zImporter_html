@@ -69,7 +69,6 @@ export declare class ZScene {
     spawn(tempName: string): ZContainer | undefined;
     createAsset(mc: ZContainer, baseNode: TemplateData): void;
     private _createImageElement;
-    private _createNineSliceElement;
     private _createTextElement;
     getChildrenFrames(templateName: string): Record<string, AnimTrackData[]>;
     static getAssetType(value: string): (new () => ZContainer) | null;
