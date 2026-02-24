@@ -37,6 +37,8 @@ export class ZScene {
     atlasImageUrl = '';
     /** Full atlas image dimensions (needed for background-size). */
     atlasSize = { w: 0, h: 0 };
+    /** Parsed bitmap fonts keyed by uniqueFontName (e.g. "Arial_1e00ffa19b9b_53"). */
+    bitmapFonts = {};
     // ── Accessors ─────────────────────────────────────────────────────────────
     get sceneStage() {
         return this._sceneStage;
@@ -80,6 +82,10 @@ export class ZScene {
             if (data.atlas === true) {
                 await this._loadAtlas();
             }
+            // Pre-load any bitmap fonts declared in the scene.
+            if (data.fonts && data.fonts.length > 0) {
+                await this._loadFonts(data.fonts);
+            }
             this.initScene(data);
             onComplete();
         }
@@ -110,8 +116,136 @@ export class ZScene {
             console.warn('[ZScene] Could not load atlas ta.json:', err);
         }
     }
+    // ── Bitmap font loading ───────────────────────────────────────────────────
+    async _loadFonts(fontNames) {
+        await Promise.all(fontNames.map(n => this._loadBitmapFont(n)));
+    }
+    async _loadBitmapFont(fontName) {
+        try {
+            const fntUrl = this.assetBasePath + fontName + '.fnt?rnd=' + Math.random();
+            const res = await fetch(fntUrl);
+            if (!res.ok)
+                return;
+            const xml = await res.text();
+            const doc = new DOMParser().parseFromString(xml, 'text/xml');
+            const lineHeight = parseInt(doc.querySelector('common')?.getAttribute('lineHeight') ?? '64', 10);
+            const chars = new Map();
+            doc.querySelectorAll('char').forEach(el => {
+                const id = parseInt(el.getAttribute('id'), 10);
+                chars.set(id, {
+                    x: parseInt(el.getAttribute('x'), 10),
+                    y: parseInt(el.getAttribute('y'), 10),
+                    w: parseInt(el.getAttribute('width'), 10),
+                    h: parseInt(el.getAttribute('height'), 10),
+                    xoffset: parseInt(el.getAttribute('xoffset'), 10),
+                    yoffset: parseInt(el.getAttribute('yoffset'), 10),
+                    xadvance: parseInt(el.getAttribute('xadvance'), 10),
+                });
+            });
+            const img = new Image();
+            await new Promise(resolve => {
+                img.onload = () => resolve();
+                img.onerror = () => resolve();
+                img.src = this.assetBasePath + fontName + '.png?rnd=' + Math.random();
+            });
+            this.bitmapFonts[fontName] = { img, lineHeight, chars };
+        }
+        catch (e) {
+            console.warn('[ZScene] Could not load bitmap font:', fontName, e);
+        }
+    }
+    // ── Bitmap text canvas renderer ───────────────────────────────────────────
+    /**
+     * Renders a bitmapText node onto a <canvas> using the pre-parsed glyph
+     * atlas.  Supports solid-colour and vertical-gradient fills, plus a
+     * shadow-based stroke outline that matches PIXI's strokeThickness.
+     */
+    _createBitmapTextCanvas(data, fontData) {
+        const text = data.text ?? '';
+        const lineH = fontData.lineHeight;
+        const strokeThick = data.strokeThickness ?? 0;
+        const pad = Math.ceil(strokeThick);
+        // Measure total advance width.
+        let textW = 0;
+        for (const ch of text) {
+            const cd = fontData.chars.get(ch.charCodeAt(0));
+            if (cd)
+                textW += cd.xadvance;
+        }
+        const canvasW = textW + pad * 2;
+        const canvasH = lineH + pad * 2;
+        // ── Offscreen canvas A: raw glyph alpha mask ──────────────────────────
+        const maskCanvas = document.createElement('canvas');
+        maskCanvas.width = canvasW;
+        maskCanvas.height = canvasH;
+        const maskCtx = maskCanvas.getContext('2d');
+        let cx = pad;
+        for (const ch of text) {
+            const cd = fontData.chars.get(ch.charCodeAt(0));
+            if (!cd)
+                continue;
+            if (cd.w > 0 && cd.h > 0) {
+                maskCtx.drawImage(fontData.img, cd.x, cd.y, cd.w, cd.h, cx + cd.xoffset, pad + cd.yoffset, cd.w, cd.h);
+            }
+            cx += cd.xadvance;
+        }
+        // ── Offscreen canvas B: fill tint (gradient or solid) ─────────────────
+        const fillCanvas = document.createElement('canvas');
+        fillCanvas.width = canvasW;
+        fillCanvas.height = canvasH;
+        const fillCtx = fillCanvas.getContext('2d');
+        // Draw the glyph mask first, then apply fill colour on top via
+        // source-in so only the glyph shape is coloured.
+        fillCtx.drawImage(maskCanvas, 0, 0);
+        fillCtx.globalCompositeOperation = 'source-in';
+        if (data.fillType === 'gradient' && data.gradientData) {
+            const gd = data.gradientData;
+            const horiz = gd.fillGradientType === 1;
+            const grad = horiz
+                ? fillCtx.createLinearGradient(pad, 0, textW + pad, 0)
+                : fillCtx.createLinearGradient(0, pad, 0, lineH + pad);
+            gd.colors.forEach((c, i) => {
+                grad.addColorStop(gd.percentages[i] ?? i / (gd.colors.length - 1), '#' + c.toString(16).padStart(6, '0'));
+            });
+            fillCtx.fillStyle = grad;
+        }
+        else {
+            const c = data.color;
+            fillCtx.fillStyle = c == null ? '#ffffff'
+                : typeof c === 'number' ? '#' + c.toString(16).padStart(6, '0')
+                    : c;
+        }
+        fillCtx.fillRect(0, 0, canvasW, canvasH);
+        // ── Final canvas: stroke shadow behind, fill on top ───────────────────
+        const canvas = document.createElement('canvas');
+        canvas.width = canvasW;
+        canvas.height = canvasH;
+        const ctx = canvas.getContext('2d');
+        if (strokeThick > 0 && data.stroke) {
+            const strokeC = typeof data.stroke === 'number'
+                ? '#' + data.stroke.toString(16).padStart(6, '0')
+                : data.stroke;
+            // Draw mask with shadow to produce an outline behind the fill.
+            ctx.save();
+            ctx.shadowColor = strokeC;
+            ctx.shadowBlur = strokeThick;
+            ctx.drawImage(maskCanvas, 0, 0);
+            ctx.restore();
+            // Clear the glyph pixels themselves (leave only the shadow halo).
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.drawImage(maskCanvas, 0, 0);
+            ctx.globalCompositeOperation = 'source-over';
+        }
+        // Composite coloured fill on top.
+        ctx.drawImage(fillCanvas, 0, 0);
+        return canvas;
+    }
     initScene(data) {
         this.data = data;
+        // Give the stage element an id matching its scene name.
+        if (data.stage?.name) {
+            this._sceneStage.name = data.stage.name;
+        }
     }
     // ── Stage / resize ────────────────────────────────────────────────────────
     /**
@@ -134,9 +268,11 @@ export class ZScene {
                     continue;
                 const mc = this.spawn(instanceData.name);
                 if (mc) {
+                    // addChild before setInstanceData so parent is set when
+                    // _applyAnchor runs inside applyTransform().
+                    this._sceneStage.addChild(mc);
                     mc.setInstanceData(instanceData, this.orientation);
                     this.addToResizeMap(mc);
-                    this._sceneStage.addChild(mc);
                     this._sceneStage[mc.name] = mc;
                 }
             }
@@ -172,6 +308,10 @@ export class ZScene {
         const offsetY = (height - baseH * scale) / 2;
         stageEl.style.transform =
             `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+        // Publish metrics so ZContainer._applyAnchor can convert viewport% → scene coords.
+        ZContainer.stageOffsetX = offsetX;
+        ZContainer.stageOffsetY = offsetY;
+        ZContainer.stageScale = scale;
         for (const [mc] of this.resizeMap) {
             if (mc._fitToScreen) {
                 mc.executeFitToScreen(width, height, offsetX, offsetY, scale);
@@ -179,6 +319,13 @@ export class ZScene {
             else {
                 mc.resize(width, height, this.orientation);
             }
+        }
+        // Second pass: re-apply anchors now that ALL containers in the resize
+        // map have been updated to the new orientation.  This prevents the
+        // chain-inversion from seeing stale _x/_y values on ancestor containers
+        // that hadn't been processed yet in the first pass.
+        for (const [mc] of this.resizeMap) {
+            mc.reapplyAnchor();
         }
     }
     // ── Template spawning ─────────────────────────────────────────────────────
@@ -227,6 +374,7 @@ export class ZScene {
                     img.style.transform =
                         `translate(${-(spriteData.pivotX || 0)}px, ${-(spriteData.pivotY || 0)}px)`;
                 }
+                img.id = _name;
                 img.dataset.name = _name;
                 mc[_name.replace(/_IMG$/, '')] = img;
                 mc.el.appendChild(img);
@@ -235,6 +383,7 @@ export class ZScene {
             else if (type === '9slice') {
                 const nsData = childNode;
                 const wrapper = this._createNineSliceElement(nsData);
+                wrapper.id = _name;
                 mc[_name.replace(/_9S$/, '')] = wrapper;
                 mc.el.appendChild(wrapper);
             }
@@ -242,6 +391,7 @@ export class ZScene {
             else if (type === 'textField' || type === 'bitmapText' || type === 'bitmapFontLocked') {
                 const textData = childNode;
                 const container = this._createTextElement(textData);
+                container.el.id = _name;
                 mc[_name] = container;
                 mc.el.appendChild(container.el);
             }
@@ -267,8 +417,10 @@ export class ZScene {
                 if (!asset.name)
                     continue;
                 mc[asset.name] = asset;
-                asset.setInstanceData(instanceData, this.orientation);
+                // addChild BEFORE setInstanceData so asset.parent is set when
+                // _applyAnchor() runs inside applyTransform().
                 mc.addChild(asset);
+                asset.setInstanceData(instanceData, this.orientation);
                 this.addToResizeMap(asset);
                 // recurse into child template if it exists
                 const childTemplate = this.data.templates[_name];
@@ -350,8 +502,21 @@ export class ZScene {
         const { top: t, right: r, bottom: b, left: l } = data;
         const origW = data.origWidth || data.width || 100;
         const origH = data.origHeight || data.height || 100;
-        div.style.width = (data.width || origW) + 'px';
-        div.style.height = (data.height || origH) + 'px';
+        // Use landscape as the initial size (matches previous behaviour).
+        // Portrait dimensions are stored as data-attributes so ZContainer.resize()
+        // can switch them when the orientation changes.
+        const lW = data.landscape?.width ?? data.width ?? origW;
+        const lH = data.landscape?.height ?? data.height ?? origH;
+        const pW = data.portrait?.width ?? lW;
+        const pH = data.portrait?.height ?? lH;
+        div.style.width = lW + 'px';
+        div.style.height = lH + 'px';
+        // Mark as 9-slice and cache per-orientation dimensions.
+        div.dataset.ns = '1';
+        div.dataset.portraitW = String(pW);
+        div.dataset.portraitH = String(pH);
+        div.dataset.landscapeW = String(lW);
+        div.dataset.landscapeH = String(lH);
         if (src && t != null) {
             div.style.borderImage = `url(${src}) ${t} ${r} ${b} ${l} fill / ${t}px ${r}px ${b}px ${l}px`;
         }
@@ -368,6 +533,22 @@ export class ZScene {
         wrapper.x = data.x || 0;
         wrapper.y = data.y || 0;
         wrapper._applyTransformPublic?.();
+        // ── BitmapText path: render to <canvas> ───────────────────────────────
+        const fontKey = data.uniqueFontName ?? (Array.isArray(data.fontName) ? data.fontName[0] : data.fontName);
+        const fontData = fontKey ? this.bitmapFonts[fontKey] : undefined;
+        if ((data.type === 'bitmapText' || data.type === 'bitmapFontLocked') && fontData) {
+            const canvas = this._createBitmapTextCanvas(data, fontData);
+            canvas.style.position = 'absolute';
+            canvas.style.imageRendering = 'pixelated';
+            // Apply anchor offset (same logic as span below).
+            const ancX = data.textAnchorX ?? 0;
+            const ancY = data.textAnchorY ?? 0;
+            if (ancX !== 0 || ancY !== 0) {
+                canvas.style.transform = `translate(${-ancX * 100}%, ${-ancY * 100}%)`;
+            }
+            wrapper.el.appendChild(canvas);
+            return wrapper;
+        }
         const span = document.createElement('span');
         span.classList.add('z-text');
         span.textContent = data.text ?? '';
@@ -376,10 +557,18 @@ export class ZScene {
         if (!isNaN(fontSize))
             span.style.fontSize = fontSize + 'px';
         // Color
-        if (data.color != null) {
-            span.style.color = typeof data.color === 'number'
+        // Always set both `color` AND `-webkit-text-fill-color`.
+        // When `-webkit-text-stroke` is applied later, WebKit requires an
+        // explicit `-webkit-text-fill-color` to keep the fill visible;
+        // without it the stroke colour can bleed into the fill.
+        const fillColor = data.color != null
+            ? (typeof data.color === 'number'
                 ? '#' + data.color.toString(16).padStart(6, '0')
-                : data.color;
+                : data.color)
+            : null;
+        if (fillColor) {
+            span.style.color = fillColor;
+            span.style.setProperty('-webkit-text-fill-color', fillColor);
         }
         // Font family
         if (data.fontName) {
@@ -408,15 +597,15 @@ export class ZScene {
             span.style.whiteSpace = 'nowrap';
         }
         // Text stroke.
-        // IMPORTANT: use paint-order:stroke fill so the white fill renders on
-        // top of the stroke (default CSS paint-order is fill→stroke which puts
-        // a thick stroke ON TOP of the fill, making white text appear dark).
+        // Use setProperty for vendor-prefixed properties to guarantee they are
+        // applied. paint-order:stroke fill draws the stroke first so the fill
+        // colour sits on top (standard in Chrome/Firefox/Safari 15.4+).
         if (data.stroke && data.strokeThickness) {
             const strokeColor = typeof data.stroke === 'number'
                 ? '#' + data.stroke.toString(16).padStart(6, '0')
                 : data.stroke;
-            span.style.webkitTextStroke = `${data.strokeThickness}px ${strokeColor}`;
-            span.style.paintOrder = 'stroke fill';
+            span.style.setProperty('-webkit-text-stroke', `${data.strokeThickness}px ${strokeColor}`);
+            span.style.setProperty('paint-order', 'stroke fill');
         }
         // Position the span based on anchor.
         // translate(-50%,-50%) centers the span on its origin point when

@@ -26,6 +26,8 @@ export declare class ZScene {
     private atlasImageUrl;
     /** Full atlas image dimensions (needed for background-size). */
     private atlasSize;
+    /** Parsed bitmap fonts keyed by uniqueFontName (e.g. "Arial_1e00ffa19b9b_53"). */
+    private bitmapFonts;
     get sceneStage(): ZContainer;
     get sceneWidth(): number;
     get sceneHeight(): number;
@@ -39,6 +41,14 @@ export declare class ZScene {
     load(assetBasePath: string, onComplete: () => void): Promise<void>;
     /** Fetches ta.json and ta.png metadata and caches the frame rects. */
     private _loadAtlas;
+    private _loadFonts;
+    private _loadBitmapFont;
+    /**
+     * Renders a bitmapText node onto a <canvas> using the pre-parsed glyph
+     * atlas.  Supports solid-colour and vertical-gradient fills, plus a
+     * shadow-based stroke outline that matches PIXI's strokeThickness.
+     */
+    private _createBitmapTextCanvas;
     initScene(data: SceneData): void;
     /**
      * Builds the scene's div hierarchy and appends it to `hostElement`.

@@ -15,13 +15,26 @@ export class ZContainer {
     // ── DOM ──────────────────────────────────────────────────────────────────
     /** The root div element for this container. */
     el;
+    // ── Stage metrics (set by ZScene.resize, read by _applyAnchor) ─────────
+    /** Current CSS-pixel X offset of the stage from the viewport edge. */
+    static stageOffsetX = 0;
+    /** Current CSS-pixel Y offset of the stage from the viewport edge. */
+    static stageOffsetY = 0;
+    /** Current uniform CSS scale applied to the stage element. */
+    static stageScale = 1;
     // ── Orientation data ─────────────────────────────────────────────────────
     portrait;
     landscape;
     currentTransform;
     // ── State flags ───────────────────────────────────────────────────────────
     resizeable = true;
-    name = "";
+    _name = "";
+    get name() { return this._name; }
+    set name(value) {
+        this._name = value;
+        if (value)
+            this.el.id = value;
+    }
     _fitToScreen = false;
     originalTextWidth;
     originalTextHeight;
@@ -312,32 +325,74 @@ export class ZContainer {
         this._applyAnchor();
     }
     _applyAnchor() {
-        if (this.currentTransform?.isAnchored && this.parent) {
-            const xPer = this.currentTransform.anchorPercentage?.x ?? 0;
-            const yPer = this.currentTransform.anchorPercentage?.y ?? 0;
-            // Convert screen-percentage to scene space:
-            // parent.el is the stage, its scale is already applied.
-            // We get scene-space coords by dividing by the stage's CSS scale.
-            const stageScale = this._getStageScale();
-            this._x = (xPer * window.innerWidth) / stageScale;
-            this._y = (yPer * window.innerHeight) / stageScale;
-            this._applyTransform();
-        }
+        this._doApplyAnchor();
     }
-    _getStageScale() {
+    /**
+     * Public entry point for ZScene to re-run the anchor computation after all
+     * containers in the resize map have been updated to the new orientation.
+     * This guarantees that ancestor `_x / _y` values are current when chain
+     * inversion runs.
+     */
+    reapplyAnchor() {
+        if (this.currentTransform?.isAnchored)
+            this._doApplyAnchor();
+    }
+    _doApplyAnchor() {
+        if (!this.currentTransform?.isAnchored || !this.parent)
+            return;
+        const xPer = this.currentTransform.anchorPercentage?.x ?? 0;
+        const yPer = this.currentTransform.anchorPercentage?.y ?? 0;
+        // Step 1: Viewport % → stage (scene-unit) coordinates.
+        // The stage element has CSS transform: translate(offsetX, offsetY) scale(stageScale)
+        const sc = ZContainer.stageScale;
+        let wx = (xPer * window.innerWidth - ZContainer.stageOffsetX) / sc;
+        let wy = (yPer * window.innerHeight - ZContainer.stageOffsetY) / sc;
+        // Step 2: Invert the full ancestor-chain transform to get parent-local coordinates.
+        // Build the chain from the stage's direct child down to this.parent.
+        // (Stop before the stage itself whose position is already accounted for above.)
+        const chain = [];
         let node = this.parent;
-        while (node) {
-            if (!node.parent) {
-                // root stage node — its scaleX is the scene scale
-                return node._scaleX || 1;
-            }
+        while (node && node.parent) {
+            chain.unshift(node);
             node = node.parent;
         }
-        return 1;
+        // Apply each ancestor's inverse transform in order (outermost → innermost).
+        for (const ancestor of chain) {
+            // Forward: world = T(ax,ay) · R(ar) · S(asx,asy) · T(-apx,-apy) · local
+            // Inverse:  local = T(apx,apy) · S(1/asx,1/asy) · R(-ar) · T(-ax,-ay) · world
+            const dx = wx - ancestor._x;
+            const dy = wy - ancestor._y;
+            const cos = Math.cos(ancestor._rotation);
+            const sin = Math.sin(ancestor._rotation);
+            // Un-rotate (apply negative rotation)
+            const rdx = cos * dx + sin * dy;
+            const rdy = -sin * dx + cos * dy;
+            // Un-scale + add pivot
+            wx = rdx / ancestor._scaleX + ancestor._pivotX;
+            wy = rdy / ancestor._scaleY + ancestor._pivotY;
+        }
+        this._x = wx;
+        this._y = wy;
+        this._applyTransform();
     }
     resize(width, height, orientation) {
         this.currentTransform = orientation === 'portrait' ? this.portrait : this.landscape;
         this.applyTransform();
+        // Update any 9-slice child divs to the correct dimensions for this orientation.
+        for (const child of Array.from(this.el.children)) {
+            if (child.dataset?.ns !== '1')
+                continue;
+            const w = orientation === 'portrait'
+                ? child.dataset.portraitW
+                : child.dataset.landscapeW;
+            const h = orientation === 'portrait'
+                ? child.dataset.portraitH
+                : child.dataset.landscapeH;
+            if (w)
+                child.style.width = w + 'px';
+            if (h)
+                child.style.height = h + 'px';
+        }
     }
     isAnchored() {
         return !!(this.currentTransform?.isAnchored);

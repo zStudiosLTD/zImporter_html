@@ -76,6 +76,12 @@ export interface NineSliceData extends SpriteData {
     landscape: OrientationData;
 }
 
+export interface GradientData {
+    colors: number[];
+    percentages: number[];
+    fillGradientType: number;  // 0 = vertical, 1 = horizontal
+}
+
 export interface TextData extends BaseAssetData {
     x: number;
     y: number;
@@ -99,6 +105,11 @@ export interface TextData extends BaseAssetData {
     textAnchorY: number;
     pivotX: number;
     pivotY: number;
+    /** Key used to look up the .fnt / .png bitmap font files. */
+    uniqueFontName?: string;
+    /** 'gradient' | 'solid' */
+    fillType?: string;
+    gradientData?: GradientData;
 }
 
 export interface AnimTrackData {

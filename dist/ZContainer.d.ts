@@ -15,11 +15,19 @@ import { InstanceData, OrientationData } from './SceneData';
 export declare class ZContainer {
     /** The root div element for this container. */
     readonly el: HTMLDivElement;
+    /** Current CSS-pixel X offset of the stage from the viewport edge. */
+    static stageOffsetX: number;
+    /** Current CSS-pixel Y offset of the stage from the viewport edge. */
+    static stageOffsetY: number;
+    /** Current uniform CSS scale applied to the stage element. */
+    static stageScale: number;
     portrait: OrientationData;
     landscape: OrientationData;
     currentTransform: OrientationData;
     resizeable: boolean;
-    name: string;
+    private _name;
+    get name(): string;
+    set name(value: string);
     _fitToScreen: boolean;
     originalTextWidth?: number;
     originalTextHeight?: number;
@@ -99,7 +107,14 @@ export declare class ZContainer {
     executeFitToScreen(viewportW: number, viewportH: number, stageOffsetX: number, stageOffsetY: number, stageScale: number): void;
     applyTransform(): void;
     private _applyAnchor;
-    private _getStageScale;
+    /**
+     * Public entry point for ZScene to re-run the anchor computation after all
+     * containers in the resize map have been updated to the new orientation.
+     * This guarantees that ancestor `_x / _y` values are current when chain
+     * inversion runs.
+     */
+    reapplyAnchor(): void;
+    private _doApplyAnchor;
     resize(width: number, height: number, orientation: 'portrait' | 'landscape'): void;
     isAnchored(): boolean;
     setAlpha(value: number): void;

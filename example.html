@@ -66,8 +66,17 @@
         // Load a scene — point to any placements.json from zImporter_Phaser/assets/
         // Example:
         const scene = new ZScene('demo');
-        scene.load('./assets/egyptExport/', () => {
+        scene.load('./assets/wildWest/', () => {
             scene.loadStage(document.getElementById('app'));
+
+            let stage = scene.sceneStage;
+            for (let child of stage.children) {
+                if (child instanceof ZTimeline) {
+                    child.play();
+
+                }
+            }
+
             window.addEventListener('resize', () =>
                 scene.resize(window.innerWidth, window.innerHeight));
         });
