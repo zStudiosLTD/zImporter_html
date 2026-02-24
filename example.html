@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>zImporter HTML – Example</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #1a1a2e;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* The stage container will be absolutely positioned / scaled by ZScene */
+        #app {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app"></div>
+
+    <!--
+    Usage example — a scene is loaded exactly like the PIXI / Phaser versions:
+
+    <script src="./dist/zimporter-html.min.js"></script>
+    <script>
+      const { ZScene, ZButton, ZUpdatables } = window.zimporter;
+
+      ZUpdatables.init(24);
+
+      const scene = new ZScene('mainScene');
+      scene.load('./assets/myScene/', () => {
+        scene.loadStage(document.getElementById('app'));
+        window.addEventListener('resize', () =>
+          scene.resize(window.innerWidth, window.innerHeight));
+      });
+    </script>
+  -->
+    <!-- UMD bundle — exposes everything on window.zimporter -->
+    <script src="./dist/zimporter-html.min.js"></script>
+    <script>
+        const { ZScene, ZButton, ZState, ZToggle, ZTimeline, ZContainer, ZUpdatables } = window.zimporter;
+
+        console.log('ZScene:', ZScene);
+        console.log('ZButton:', ZButton);
+        console.log('ZState:', ZState);
+        console.log('ZToggle:', ZToggle);
+        console.log('ZTimeline:', ZTimeline);
+        console.log('ZContainer:', ZContainer);
+
+        // Boot the animation ticker (drives ZTimeline frame-stepping)
+        ZUpdatables.init(24);
+
+        // Load a scene — point to any placements.json from zImporter_Phaser/assets/
+        // Example:
+        const scene = new ZScene('demo');
+        scene.load('./assets/egyptExport/', () => {
+            scene.loadStage(document.getElementById('app'));
+            window.addEventListener('resize', () =>
+                scene.resize(window.innerWidth, window.innerHeight));
+        });
+    </script>
+</body>
+
+</html>

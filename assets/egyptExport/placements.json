@@ -1,0 +1,1062 @@
+{
+  "resolution": {
+    "x": 1136,
+    "y": 640
+  },
+  "animTracks": {},
+  "stage": {
+    "children": [
+      {
+        "type": "fullScreen",
+        "name": "Templatex5sn",
+        "template": true,
+        "guide": false,
+        "instanceName": "instance_2ols",
+        "filters": {},
+        "portrait": {
+          "x": 318,
+          "y": 587,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "alpha": 1,
+          "pivotX": 518.7130623714388,
+          "pivotY": 385.22738978456914,
+          "visible": true,
+          "isAnchored": false,
+          "anchorLocalPercentage": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "landscape": {
+          "x": 582,
+          "y": 327,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "alpha": 1,
+          "pivotX": 521.6243698071878,
+          "pivotY": 350.6404062208465,
+          "visible": true,
+          "isAnchored": false,
+          "anchorLocalPercentage": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "attrs": {
+          "fitToScreen": true
+        }
+      },
+      {
+        "type": "asset",
+        "name": "Templateaksb",
+        "template": true,
+        "guide": false,
+        "instanceName": "instance_zeey",
+        "filters": {},
+        "portrait": {
+          "x": 312,
+          "y": 544,
+          "rotation": 0,
+          "scaleX": 0.76,
+          "scaleY": 0.76,
+          "alpha": 1,
+          "pivotX": 291,
+          "pivotY": 374.5,
+          "visible": true,
+          "isAnchored": false,
+          "anchorLocalPercentage": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "landscape": {
+          "x": 262,
+          "y": 320,
+          "rotation": 0,
+          "scaleX": 0.76,
+          "scaleY": 0.76,
+          "alpha": 1,
+          "pivotX": 291,
+          "pivotY": 374.5,
+          "visible": true,
+          "isAnchored": false,
+          "anchorLocalPercentage": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      },
+      {
+        "type": "state",
+        "name": "Templateqp09",
+        "template": true,
+        "guide": false,
+        "instanceName": "gallery",
+        "filters": {},
+        "portrait": {
+          "x": 312,
+          "y": 544,
+          "rotation": 0,
+          "scaleX": 0.3,
+          "scaleY": 0.3,
+          "alpha": 1,
+          "pivotX": 0,
+          "pivotY": 0,
+          "visible": true,
+          "isAnchored": false,
+          "anchorLocalPercentage": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "landscape": {
+          "x": 262,
+          "y": 318,
+          "rotation": 0,
+          "scaleX": 0.3,
+          "scaleY": 0.3,
+          "alpha": 1,
+          "pivotX": 0,
+          "pivotY": 0,
+          "visible": true,
+          "isAnchored": false,
+          "anchorLocalPercentage": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      },
+      {
+        "portrait": {
+          "x": 316,
+          "y": 1024,
+          "rotation": 0,
+          "scaleX": 1.43,
+          "scaleY": 1.43,
+          "alpha": 1,
+          "pivotX": 80.5,
+          "pivotY": 39.12609100341797,
+          "visible": true,
+          "isAnchored": false,
+          "anchorLocalPercentage": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "landscape": {
+          "x": 680.6,
+          "y": 253.75,
+          "rotation": 0,
+          "scaleX": 1.91,
+          "scaleY": 1.91,
+          "alpha": 1,
+          "pivotX": 0,
+          "pivotY": 0,
+          "visible": true,
+          "isAnchored": false,
+          "anchorLocalPercentage": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "type": "btn",
+        "name": "ExampleBTNTemplate_1",
+        "guide": false,
+        "template": true,
+        "instanceName": "myBTN",
+        "filters": {}
+      }
+    ],
+    "type": "Container",
+    "name": "stage"
+  },
+  "templates": {
+    "Templatex5sn": {
+      "children": [
+        {
+          "type": "img",
+          "name": "Templatex5sn_IMG",
+          "width": 1024,
+          "height": 684,
+          "x": 0,
+          "y": 0,
+          "pivotX": 0,
+          "pivotY": 0,
+          "filePath": "../bg.jpg",
+          "filters": {}
+        }
+      ],
+      "type": "fullScreen",
+      "name": "Templatex5sn"
+    },
+    "Templateaksb": {
+      "children": [
+        {
+          "type": "img",
+          "name": "Templateaksb_IMG",
+          "width": 582,
+          "height": 749,
+          "x": 0,
+          "y": 0,
+          "pivotX": 0,
+          "pivotY": 0,
+          "filePath": "../frame.png",
+          "filters": {}
+        }
+      ],
+      "type": "asset",
+      "name": "Templateaksb"
+    },
+    "Templateqp09": {
+      "children": [
+        {
+          "type": "asset",
+          "name": "Templateqqr8",
+          "template": true,
+          "guide": false,
+          "instanceName": "writings2",
+          "filters": {},
+          "portrait": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "alpha": 1,
+            "pivotX": 250,
+            "pivotY": 370,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "landscape": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "alpha": 1,
+            "pivotX": 250,
+            "pivotY": 370,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          }
+        },
+        {
+          "type": "asset",
+          "name": "Templatecdz9",
+          "template": true,
+          "guide": false,
+          "instanceName": "birdMan",
+          "filters": {},
+          "portrait": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "alpha": 1,
+            "pivotX": 328.5,
+            "pivotY": 434,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "landscape": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "alpha": 1,
+            "pivotX": 328.5,
+            "pivotY": 434,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          }
+        },
+        {
+          "type": "asset",
+          "name": "Template2x3i",
+          "template": true,
+          "guide": false,
+          "instanceName": "ankh",
+          "filters": {},
+          "portrait": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "alpha": 1,
+            "pivotX": 253,
+            "pivotY": 368.5,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "landscape": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "alpha": 1,
+            "pivotX": 253,
+            "pivotY": 368.5,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          }
+        },
+        {
+          "type": "asset",
+          "name": "Template4s8a",
+          "template": true,
+          "guide": false,
+          "instanceName": "writings",
+          "filters": {},
+          "portrait": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "alpha": 1,
+            "pivotX": 136.5,
+            "pivotY": 399,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "landscape": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "alpha": 1,
+            "pivotX": 136.5,
+            "pivotY": 399,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          }
+        },
+        {
+          "type": "asset",
+          "name": "Templategg8u",
+          "template": true,
+          "guide": false,
+          "instanceName": "scarab",
+          "filters": {},
+          "portrait": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "alpha": 1,
+            "pivotX": 314,
+            "pivotY": 223.5,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "landscape": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "alpha": 1,
+            "pivotX": 314,
+            "pivotY": 223.5,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          }
+        },
+        {
+          "type": "asset",
+          "name": "Templatewpzr",
+          "template": true,
+          "guide": false,
+          "instanceName": "cat",
+          "filters": {},
+          "portrait": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "alpha": 1,
+            "pivotX": 234.5,
+            "pivotY": 486.5,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "landscape": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "alpha": 1,
+            "pivotX": 234.5,
+            "pivotY": 486.5,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          }
+        },
+        {
+          "type": "asset",
+          "name": "Templatefkvg",
+          "template": true,
+          "guide": false,
+          "instanceName": "pyramid",
+          "filters": {},
+          "portrait": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "alpha": 1,
+            "pivotX": 416,
+            "pivotY": 288.5,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "landscape": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "alpha": 1,
+            "pivotX": 416,
+            "pivotY": 288.5,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          }
+        },
+        {
+          "type": "asset",
+          "name": "Templateb5bn",
+          "template": true,
+          "guide": false,
+          "instanceName": "carriage",
+          "filters": {},
+          "portrait": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "alpha": 1,
+            "pivotX": 454.5,
+            "pivotY": 273.5,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "landscape": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "alpha": 1,
+            "pivotX": 454.5,
+            "pivotY": 273.5,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          }
+        },
+        {
+          "type": "asset",
+          "name": "Templatexn9f",
+          "template": true,
+          "guide": false,
+          "instanceName": "pharoe",
+          "filters": {},
+          "portrait": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "alpha": 1,
+            "pivotX": 249,
+            "pivotY": 312,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "landscape": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "alpha": 1,
+            "pivotX": 249,
+            "pivotY": 312,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          }
+        }
+      ],
+      "type": "state",
+      "name": "Templateqp09"
+    },
+    "Templateqqr8": {
+      "children": [
+        {
+          "type": "img",
+          "name": "Templateqqr8_IMG",
+          "width": 500,
+          "height": 740,
+          "x": 0,
+          "y": 0,
+          "pivotX": 0,
+          "pivotY": 0,
+          "filePath": "../symbol10.jpg",
+          "filters": {}
+        }
+      ],
+      "type": "asset",
+      "name": "Templateqqr8"
+    },
+    "Templatecdz9": {
+      "children": [
+        {
+          "type": "img",
+          "name": "Templatecdz9_IMG",
+          "width": 657,
+          "height": 868,
+          "x": 0,
+          "y": 0,
+          "pivotX": 0,
+          "pivotY": 0,
+          "filePath": "../unnamed.jpg",
+          "filters": {}
+        }
+      ],
+      "type": "asset",
+      "name": "Templatecdz9"
+    },
+    "Template2x3i": {
+      "children": [
+        {
+          "type": "img",
+          "name": "Template2x3i_IMG",
+          "width": 506,
+          "height": 737,
+          "x": 0,
+          "y": 0,
+          "pivotX": 0,
+          "pivotY": 0,
+          "filePath": "../unnamed (3).jpg",
+          "filters": {}
+        }
+      ],
+      "type": "asset",
+      "name": "Template2x3i"
+    },
+    "Template4s8a": {
+      "children": [
+        {
+          "type": "img",
+          "name": "Template4s8a_IMG",
+          "width": 273,
+          "height": 798,
+          "x": 0,
+          "y": 0,
+          "pivotX": 0,
+          "pivotY": 0,
+          "filePath": "../unnamed (7).jpg",
+          "filters": {}
+        }
+      ],
+      "type": "asset",
+      "name": "Template4s8a"
+    },
+    "Templategg8u": {
+      "children": [
+        {
+          "type": "img",
+          "name": "Templategg8u_IMG",
+          "width": 628,
+          "height": 447,
+          "x": 0,
+          "y": 0,
+          "pivotX": 0,
+          "pivotY": 0,
+          "filePath": "../unnamed (1).jpg",
+          "filters": {}
+        }
+      ],
+      "type": "asset",
+      "name": "Templategg8u"
+    },
+    "Templatewpzr": {
+      "children": [
+        {
+          "type": "img",
+          "name": "Templatewpzr_IMG",
+          "width": 469,
+          "height": 973,
+          "x": 0,
+          "y": 0,
+          "pivotX": 0,
+          "pivotY": 0,
+          "filePath": "../unnamed (6).jpg",
+          "filters": {}
+        }
+      ],
+      "type": "asset",
+      "name": "Templatewpzr"
+    },
+    "Templatefkvg": {
+      "children": [
+        {
+          "type": "img",
+          "name": "Templatefkvg_IMG",
+          "width": 832,
+          "height": 577,
+          "x": 0,
+          "y": 0,
+          "pivotX": 0,
+          "pivotY": 0,
+          "filePath": "../unnamed (4).jpg",
+          "filters": {}
+        }
+      ],
+      "type": "asset",
+      "name": "Templatefkvg"
+    },
+    "Templateb5bn": {
+      "children": [
+        {
+          "type": "img",
+          "name": "Templateb5bn_IMG",
+          "width": 909,
+          "height": 547,
+          "x": 0,
+          "y": 0,
+          "pivotX": 0,
+          "pivotY": 0,
+          "filePath": "../unnamed (5).jpg",
+          "filters": {}
+        }
+      ],
+      "type": "asset",
+      "name": "Templateb5bn"
+    },
+    "Templatexn9f": {
+      "children": [
+        {
+          "type": "img",
+          "name": "Templatexn9f_IMG",
+          "width": 498,
+          "height": 624,
+          "x": 0,
+          "y": 0,
+          "pivotX": 0,
+          "pivotY": 0,
+          "filePath": "../unnamed (2).jpg",
+          "filters": {}
+        }
+      ],
+      "type": "asset",
+      "name": "Templatexn9f"
+    },
+    "ExampleBTNTemplate_1": {
+      "type": "btn",
+      "name": "ExampleBTNTemplate_1",
+      "children": [
+        {
+          "portrait": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 0.26,
+            "scaleY": 0.26,
+            "alpha": 1,
+            "pivotX": 0,
+            "pivotY": 0,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "landscape": {
+            "x": 0,
+            "y": 0.84,
+            "rotation": 0,
+            "scaleX": 0.26,
+            "scaleY": 0.26,
+            "alpha": 1,
+            "pivotX": 0,
+            "pivotY": 0,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "type": "asset",
+          "name": "ExampleBTNDisabledState_1",
+          "guide": false,
+          "template": true,
+          "instanceName": "disabledState",
+          "filters": {}
+        },
+        {
+          "portrait": {
+            "x": 0,
+            "y": 0,
+            "rotation": 0,
+            "scaleX": 0.26,
+            "scaleY": 0.26,
+            "alpha": 1,
+            "pivotX": 0,
+            "pivotY": 0,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "landscape": {
+            "x": 0,
+            "y": 0.84,
+            "rotation": 0,
+            "scaleX": 0.26,
+            "scaleY": 0.26,
+            "alpha": 1,
+            "pivotX": 0,
+            "pivotY": 0,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "type": "asset",
+          "name": "ExampleBTNUpState_1",
+          "guide": false,
+          "template": true,
+          "instanceName": "upState",
+          "filters": {}
+        },
+        {
+          "portrait": {
+            "x": 161,
+            "y": 78,
+            "rotation": 3.14,
+            "scaleX": 0.26,
+            "scaleY": 0.26,
+            "alpha": 1,
+            "pivotX": 0,
+            "pivotY": 0,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "landscape": {
+            "x": 161,
+            "y": 78,
+            "rotation": 3.14,
+            "scaleX": 0.26,
+            "scaleY": 0.26,
+            "alpha": 1,
+            "pivotX": 0,
+            "pivotY": 0,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "type": "asset",
+          "name": "ExampleBTNOverState_1",
+          "guide": false,
+          "template": true,
+          "instanceName": "overState",
+          "filters": {}
+        },
+        {
+          "portrait": {
+            "x": 4,
+            "y": 2,
+            "rotation": 0,
+            "scaleX": 0.25,
+            "scaleY": 0.25,
+            "alpha": 1,
+            "pivotX": 0,
+            "pivotY": 0,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "landscape": {
+            "x": 4,
+            "y": 2,
+            "rotation": 0,
+            "scaleX": 0.25,
+            "scaleY": 0.25,
+            "alpha": 1,
+            "pivotX": 0,
+            "pivotY": 0,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "type": "asset",
+          "name": "ExampleBTNDownState_1",
+          "guide": false,
+          "template": true,
+          "instanceName": "downState",
+          "filters": {}
+        },
+        {
+          "portrait": {
+            "x": 82,
+            "y": 39,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "alpha": 1,
+            "pivotX": 0,
+            "pivotY": 0,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "landscape": {
+            "x": 82.58,
+            "y": 39.89,
+            "rotation": 0,
+            "scaleX": 1,
+            "scaleY": 1,
+            "alpha": 1,
+            "pivotX": 0,
+            "pivotY": 0,
+            "visible": true,
+            "isAnchored": false,
+            "anchorLocalPercentage": {
+              "x": 0,
+              "y": 0
+            }
+          },
+          "type": "asset",
+          "name": "ExampleBTNText_1",
+          "guide": false,
+          "template": true,
+          "instanceName": "labelContainer",
+          "filters": {}
+        }
+      ]
+    },
+    "ExampleBTNDisabledState_1": {
+      "type": "asset",
+      "name": "ExampleBTNDisabledState_1",
+      "children": [
+        {
+          "type": "img",
+          "name": "ExampleBTNDisabledState_1_IMG",
+          "width": 615,
+          "height": 298,
+          "x": 0,
+          "y": 0,
+          "pivotX": 0,
+          "pivotY": 0,
+          "filePath": "../../../../../../Applications/zStudio.app/Contents/Resources/app.asar.unpacked/bin/assets/zStudioComponents/simpleButton/images/button_disabled.png",
+          "filters": {}
+        }
+      ]
+    },
+    "ExampleBTNUpState_1": {
+      "type": "asset",
+      "name": "ExampleBTNUpState_1",
+      "children": [
+        {
+          "type": "img",
+          "name": "ExampleBTNUpState_1_IMG",
+          "width": 609,
+          "height": 290,
+          "x": 0,
+          "y": 0,
+          "pivotX": 0,
+          "pivotY": 0,
+          "filePath": "../../../../../../Applications/zStudio.app/Contents/Resources/app.asar.unpacked/bin/assets/zStudioComponents/simpleButton/images/button.png",
+          "filters": {}
+        }
+      ]
+    },
+    "ExampleBTNOverState_1": {
+      "type": "asset",
+      "name": "ExampleBTNOverState_1",
+      "children": [
+        {
+          "type": "img",
+          "name": "ExampleBTNOverState_1_IMG",
+          "width": 609,
+          "height": 290,
+          "x": 0,
+          "y": 0,
+          "pivotX": 0,
+          "pivotY": 0,
+          "filePath": "../../../../../../Applications/zStudio.app/Contents/Resources/app.asar.unpacked/bin/assets/zStudioComponents/simpleButton/images/button.png",
+          "filters": {}
+        }
+      ]
+    },
+    "ExampleBTNDownState_1": {
+      "type": "asset",
+      "name": "ExampleBTNDownState_1",
+      "children": [
+        {
+          "type": "img",
+          "name": "ExampleBTNDownState_1_IMG",
+          "width": 609,
+          "height": 290,
+          "x": 0,
+          "y": 0,
+          "pivotX": 0,
+          "pivotY": 0,
+          "filePath": "../../../../../../Applications/zStudio.app/Contents/Resources/app.asar.unpacked/bin/assets/zStudioComponents/simpleButton/images/button.png",
+          "filters": {}
+        }
+      ]
+    },
+    "ExampleBTNText_1": {
+      "type": "asset",
+      "name": "ExampleBTNText_1",
+      "children": [
+        {
+          "text": "CLICK ME",
+          "type": "textField",
+          "name": "label_1",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "width": 110.92,
+          "height": 34.92,
+          "alpha": 1,
+          "size": 22,
+          "color": "#ffffff",
+          "align": "center",
+          "fontName": "Adelle Sans Devanagari",
+          "z": 1,
+          "stroke": "#000000",
+          "strokeThickness": 3,
+          "wordWrap": false,
+          "wordWrapWidth": 100,
+          "breakWords": false,
+          "leading": 2.9,
+          "letterSpacing": 1.07,
+          "padding": 2.04,
+          "textAnchorX": 0.5,
+          "textAnchorY": 0.5,
+          "lineHeight": 0,
+          "pivotX": 0,
+          "pivotY": 0,
+          "lineJoin": "round",
+          "fontWeight": "Normal",
+          "filters": {}
+        }
+      ]
+    }
+  },
+  "fonts": [],
+  "fps": 60,
+  "cuePoints": {},
+  "atlas": true
+}

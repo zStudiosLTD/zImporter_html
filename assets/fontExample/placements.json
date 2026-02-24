@@ -1,0 +1,111 @@
+{
+  "resolution": {
+    "x": 1136,
+    "y": 640
+  },
+  "animTracks": {},
+  "stage": {
+    "children": [
+      {
+        "type": "asset",
+        "name": "Template18n8",
+        "template": true,
+        "guide": false,
+        "instanceName": "instance_giy2",
+        "filters": {},
+        "portrait": {
+          "x": 319,
+          "y": 599,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "alpha": 1,
+          "pivotX": 0,
+          "pivotY": 0,
+          "visible": true,
+          "isAnchored": false,
+          "anchorLocalPercentage": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        "landscape": {
+          "x": 568,
+          "y": 320,
+          "rotation": 0,
+          "scaleX": 1,
+          "scaleY": 1,
+          "alpha": 1,
+          "pivotX": 0,
+          "pivotY": 0,
+          "visible": true,
+          "isAnchored": false,
+          "anchorLocalPercentage": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      }
+    ],
+    "type": "Container",
+    "name": "stage"
+  },
+  "templates": {
+    "Template18n8": {
+      "children": [
+        {
+          "text": "New Textfield",
+          "type": "bitmapText",
+          "name": "label",
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "width": 350,
+          "height": 85,
+          "alpha": 1,
+          "size": 53,
+          "align": "center",
+          "fontName": "Arial",
+          "z": 1,
+          "stroke": "#000000",
+          "strokeThickness": 12,
+          "wordWrap": false,
+          "wordWrapWidth": 100,
+          "breakWords": false,
+          "leading": 0,
+          "letterSpacing": 0,
+          "padding": 0,
+          "textAnchorX": 0.5,
+          "textAnchorY": 0.5,
+          "lineHeight": 0,
+          "pivotX": 0,
+          "pivotY": 0,
+          "lineJoin": "round",
+          "fontWeight": "bold",
+          "uniqueFontName": "Arial_1e00ffa19b9b_53",
+          "fillType": "gradient",
+          "filters": {},
+          "gradientData": {
+            "colors": [
+              1966335,
+              10591131
+            ],
+            "percentages": [
+              0.57,
+              0.71
+            ],
+            "fillGradientType": 0
+          }
+        }
+      ],
+      "type": "asset",
+      "name": "Template18n8"
+    }
+  },
+  "fonts": [
+    "Arial_1e00ffa19b9b_53"
+  ],
+  "fps": 60,
+  "cuePoints": {},
+  "atlas": false
+}
