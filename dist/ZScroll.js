@@ -51,9 +51,17 @@ export class ZScroll extends ZContainer {
         this._removeListeners();
         if (!this.scrollBar || !this.scrollContent || !this.beed)
             return;
-        // Measure the scroll area height from the scrollBar element.
-        this.scrollBarHeight = this.scrollBar.el.offsetHeight || (this.scrollBar.currentTransform?.height ?? 0);
-        this.contentHeight = this.scrollContent.el.scrollHeight || this.scrollContent.el.offsetHeight;
+        const scale = ZContainer.stageScale || 1;
+        // scrollBarHeight: height of the scroll viewport in scene units.
+        // scrollBar.el is position:absolute with no explicit CSS height; its
+        // actual height lives on its descendants (e.g. a ZNineSlice).  Walk the
+        // DOM tree to find the real rendered bottom edge.
+        this.scrollBarHeight = this._measureDescendantHeight(this.scrollBar.el, scale);
+        if (this.scrollBarHeight <= 0) {
+            this.scrollBarHeight = this.scrollBar.currentTransform?.height ?? 200;
+        }
+        // contentHeight: total height of the scrollable content in scene units.
+        this.contentHeight = this._measureDescendantHeight(this.scrollContent.el, scale);
         if (this.contentHeight <= this.scrollBarHeight) {
             this.beed.visible = false;
             this._scrollOffsetY = 0;
@@ -72,18 +80,21 @@ export class ZScroll extends ZContainer {
     _injectClipWrapper() {
         // Remove stale wrapper if re-setup is called.
         if (this._clipEl) {
-            // Move scrollContent.el back to ZScroll.el before removing clip.
             this.el.appendChild(this.scrollContent.el);
             this._clipEl.remove();
             this._clipEl = null;
         }
+        // The clip covers the scrollable content area — NOT the scrollbar track.
+        // scrollBar sits at the right edge (e.g. x=420); that x value is the clip width.
+        // The clip is vertically aligned with the scrollBar track.
+        const clipW = this.scrollBar.currentTransform?.x
+            ?? this._measureDescendantWidth(this.scrollContent.el, ZContainer.stageScale || 1);
+        const clipY = this.scrollBar.currentTransform?.y ?? 0;
         const clip = document.createElement('div');
         clip.style.cssText =
             `position:absolute;overflow:hidden;` +
-                `left:${this.scrollBar.currentTransform?.x ?? 0}px;` +
-                `top:${this.scrollBar.currentTransform?.y ?? 0}px;` +
-                `width:${this.scrollBar.el.offsetWidth || (this.scrollBar.currentTransform?.width ?? 200)}px;` +
-                `height:${this.scrollBarHeight}px;`;
+                `left:0px;top:${clipY}px;` +
+                `width:${clipW}px;height:${this.scrollBarHeight}px;`;
         // Move scrollContent's el into the clip div.
         clip.appendChild(this.scrollContent.el);
         this.el.appendChild(clip);
@@ -157,7 +168,9 @@ export class ZScroll extends ZContainer {
         return this.beed._y ?? 0;
     }
     _beedHeight() {
-        return this.beed.el.offsetHeight || 20;
+        // beed.el is position:absolute — walk descendants for real height.
+        const h = this._measureDescendantHeight(this.beed.el, ZContainer.stageScale || 1);
+        return h > 0 ? h : 20;
     }
     _setBeedY(y) {
         const maxY = Math.max(0, this.scrollBarHeight - this._beedHeight());
@@ -195,10 +208,59 @@ export class ZScroll extends ZContainer {
                 ` scale(${sx},${sy})` +
                 ` translate(${-px}px,${-py}px)`;
     }
-    /** Convert clientY (viewport pixels) to ZScroll local Y. */
+    /**
+     * Convert clientY (viewport/screen pixels) to ZScroll-local Y in scene
+     * units by subtracting the element's top and dividing by stageScale.
+     */
     _toLocalY(clientY) {
         const rect = this.el.getBoundingClientRect();
-        return clientY - rect.top;
+        return (clientY - rect.top) / (ZContainer.stageScale || 1);
+    }
+    // ─────────────────────────────────────────────────────────────────────────
+    // Measurement helpers
+    // ─────────────────────────────────────────────────────────────────────────
+    /**
+     * Walk all DOM descendants of `el` and return the maximum bottom-edge
+     * distance from el's own top, converted to scene units.
+     * Works for position:absolute subtrees where offsetHeight / scrollHeight = 0.
+     */
+    _measureDescendantHeight(el, scale) {
+        const refTop = el.getBoundingClientRect().top;
+        let maxBottom = 0;
+        const walk = (node) => {
+            if (node !== el && node.offsetHeight > 0) {
+                const r = node.getBoundingClientRect();
+                const bottom = (r.bottom - refTop) / scale;
+                if (bottom > maxBottom)
+                    maxBottom = bottom;
+            }
+            for (const child of Array.from(node.children)) {
+                walk(child);
+            }
+        };
+        walk(el);
+        return maxBottom;
+    }
+    /**
+     * Walk all DOM descendants of `el` and return the maximum right-edge
+     * distance from el's own left, converted to scene units.
+     */
+    _measureDescendantWidth(el, scale) {
+        const refLeft = el.getBoundingClientRect().left;
+        let maxRight = 0;
+        const walk = (node) => {
+            if (node !== el && node.offsetWidth > 0) {
+                const r = node.getBoundingClientRect();
+                const right = (r.right - refLeft) / scale;
+                if (right > maxRight)
+                    maxRight = right;
+            }
+            for (const child of Array.from(node.children)) {
+                walk(child);
+            }
+        };
+        walk(el);
+        return maxRight;
     }
     // ─────────────────────────────────────────────────────────────────────────
     // Resize

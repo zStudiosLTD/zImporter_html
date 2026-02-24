@@ -67,9 +67,9 @@ export class ParticleConverter {
 
     private static processBehavior(behavior: any, cfg: any): void {
         switch (behavior.type) {
-            case 'alpha':    ParticleConverter.processAlphaBehavior(behavior.config, cfg); break;
-            case 'scale':    ParticleConverter.processScaleBehavior(behavior.config, cfg); break;
-            case 'color':    ParticleConverter.processColorBehavior(behavior.config, cfg); break;
+            case 'alpha': ParticleConverter.processAlphaBehavior(behavior.config, cfg); break;
+            case 'scale': ParticleConverter.processScaleBehavior(behavior.config, cfg); break;
+            case 'color': ParticleConverter.processColorBehavior(behavior.config, cfg); break;
             case 'moveSpeed': ParticleConverter.processMoveSpeedBehavior(behavior.config, cfg); break;
             case 'rotationStatic': ParticleConverter.processRotationStaticBehavior(behavior.config, cfg); break;
             case 'spawnBurst': ParticleConverter.processSpawnBurstBehavior(behavior.config, cfg); break;
@@ -93,7 +93,7 @@ export class ParticleConverter {
         if (config?.color?.list?.length >= 2) {
             cfg.tint = {
                 start: ParticleConverter.hexToInt(config.color.list[0].value),
-                end:   ParticleConverter.hexToInt(config.color.list[config.color.list.length - 1].value),
+                end: ParticleConverter.hexToInt(config.color.list[config.color.list.length - 1].value),
             };
         }
     }

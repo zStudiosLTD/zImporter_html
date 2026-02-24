@@ -51,8 +51,22 @@ export declare class ZScroll extends ZContainer {
     private _syncBeed;
     /** Write _scrollOffsetY into scrollContent.el's CSS transform. */
     private _applyScrollOffset;
-    /** Convert clientY (viewport pixels) to ZScroll local Y. */
+    /**
+     * Convert clientY (viewport/screen pixels) to ZScroll-local Y in scene
+     * units by subtracting the element's top and dividing by stageScale.
+     */
     private _toLocalY;
+    /**
+     * Walk all DOM descendants of `el` and return the maximum bottom-edge
+     * distance from el's own top, converted to scene units.
+     * Works for position:absolute subtrees where offsetHeight / scrollHeight = 0.
+     */
+    private _measureDescendantHeight;
+    /**
+     * Walk all DOM descendants of `el` and return the maximum right-edge
+     * distance from el's own left, converted to scene units.
+     */
+    private _measureDescendantWidth;
     applyTransform(): void;
 }
 //# sourceMappingURL=ZScroll.d.ts.map
