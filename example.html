@@ -53,20 +53,13 @@
     <script>
         const { ZScene, ZButton, ZState, ZToggle, ZTimeline, ZContainer, ZUpdatables } = window.zimporter;
 
-        console.log('ZScene:', ZScene);
-        console.log('ZButton:', ZButton);
-        console.log('ZState:', ZState);
-        console.log('ZToggle:', ZToggle);
-        console.log('ZTimeline:', ZTimeline);
-        console.log('ZContainer:', ZContainer);
-
         // Boot the animation ticker (drives ZTimeline frame-stepping)
         ZUpdatables.init(24);
 
         // Load a scene — point to any placements.json from zImporter_Phaser/assets/
         // Example:
         const scene = new ZScene('demo');
-        scene.load('./assets/wildWest/', () => {
+        scene.load('./assets/scroll/', () => {
             scene.loadStage(document.getElementById('app'));
 
             let stage = scene.sceneStage;

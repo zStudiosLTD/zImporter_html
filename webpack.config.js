@@ -1,6 +1,4 @@
 const path = require('path');
-const webpack = require('webpack');
-const packageJson = require('./package.json');
 
 module.exports = {
   entry: './src/index.ts',
@@ -29,10 +27,6 @@ module.exports = {
   optimization: {
     minimize: true,
   },
-  plugins: [
-    new webpack.DefinePlugin({
-      __LIB_VERSION__: JSON.stringify(packageJson.version),
-    }),
-  ],
   mode: 'production',
+  devtool: 'source-map',
 };
