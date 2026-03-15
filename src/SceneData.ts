@@ -98,6 +98,8 @@ export interface OrientationData {
     anchorPercentage?: { x: number; y: number };
     width: number;
     height: number;
+    skewX?: number;
+    skewY?: number;
 }
 
 export interface BaseAssetData {
@@ -187,6 +189,8 @@ export interface AnimTrackData {
     alpha?: number;
     pivotX?: number;
     pivotY?: number;
+    skewX?: number;
+    skewY?: number;
 }
 
 export interface TemplateData {

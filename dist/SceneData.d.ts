@@ -85,6 +85,8 @@ export interface OrientationData {
     };
     width: number;
     height: number;
+    skewX?: number;
+    skewY?: number;
 }
 export interface BaseAssetData {
     type: string;
@@ -166,6 +168,8 @@ export interface AnimTrackData {
     alpha?: number;
     pivotX?: number;
     pivotY?: number;
+    skewX?: number;
+    skewY?: number;
 }
 export interface TemplateData {
     type: string;

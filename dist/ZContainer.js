@@ -51,6 +51,8 @@ export class ZContainer {
     _pivotY = 0;
     _alpha = 1;
     _visible = true;
+    _skewX = 0;
+    _skewY = 0;
     // ── Interaction ───────────────────────────────────────────────────────────
     interactive = false;
     interactiveChildren = true;
@@ -71,6 +73,12 @@ export class ZContainer {
             set x(v) { self.scaleX = v; },
             get y() { return self._scaleY; },
             set y(v) { self.scaleY = v; },
+        };
+        this.skew = {
+            get x() { return self._skewX; },
+            set x(v) { self._skewX = v; self._applyTransform(); },
+            get y() { return self._skewY; },
+            set y(v) { self._skewY = v; self._applyTransform(); },
         };
     }
     // ─────────────────────────────────────────────────────────────────────────
@@ -216,6 +224,7 @@ export class ZContainer {
      * Initialised in the constructor so `this` is captured correctly.
      */
     scale;
+    skew;
     // ─────────────────────────────────────────────────────────────────────────
     // CSS transform writer
     // ─────────────────────────────────────────────────────────────────────────
@@ -228,6 +237,7 @@ export class ZContainer {
         this.el.style.transform =
             `translate(${this._x}px,${this._y}px)` +
                 ` rotate(${this._rotation}rad)` +
+                ` skewX(${this._skewX}rad) skewY(${this._skewY}rad)` +
                 ` scale(${this._scaleX},${this._scaleY})` +
                 ` translate(${-px}px,${-py}px)`;
     }
@@ -321,6 +331,9 @@ export class ZContainer {
         this._pivotY = t.pivotY || 0;
         this.alpha = t.alpha ?? 1;
         this.visible = t.visible !== false;
+        // Apply Flash skew: skewY is Flash's X-axis angle, skewX is Y-axis angle.
+        this._skewY = t.skewY !== undefined ? t.skewY - this._rotation : 0;
+        this._skewX = t.skewX !== undefined ? this._rotation - t.skewX : 0;
         this._applyTransform();
         this._applyAnchor();
     }

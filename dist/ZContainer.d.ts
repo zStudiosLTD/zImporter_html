@@ -43,6 +43,8 @@ export declare class ZContainer {
     private _pivotY;
     private _alpha;
     private _visible;
+    private _skewX;
+    private _skewY;
     interactive: boolean;
     interactiveChildren: boolean;
     /** Typed child list (mirrors PIXI's children array). */
@@ -83,6 +85,10 @@ export declare class ZContainer {
      * Initialised in the constructor so `this` is captured correctly.
      */
     readonly scale: {
+        x: number;
+        y: number;
+    };
+    readonly skew: {
         x: number;
         y: number;
     };
