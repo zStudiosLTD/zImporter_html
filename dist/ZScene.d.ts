@@ -75,8 +75,10 @@ export declare class ZScene {
     static isAssetType(value: string): value is AssetType;
     degreesToRadians(degrees: number): number;
     /**
-     * Removes the scene's stage element from the DOM and clears the scene map.
+     * Stops all playing timelines, removes the stage element from the DOM,
+     * and clears internal maps.
      */
     destroy(): void;
+    private _destroyTimelines;
 }
 //# sourceMappingURL=ZScene.d.ts.map

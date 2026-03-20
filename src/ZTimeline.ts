@@ -134,4 +134,13 @@ export class ZTimeline extends ZContainer {
     public override getType(): string {
         return 'ZTimeline';
     }
+
+    public destroy(): void {
+        this.stop();
+        for (const child of this.children) {
+            if (child instanceof ZTimeline) {
+                child.destroy();
+            }
+        }
+    }
 }

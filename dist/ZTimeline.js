@@ -126,5 +126,13 @@ export class ZTimeline extends ZContainer {
     getType() {
         return 'ZTimeline';
     }
+    destroy() {
+        this.stop();
+        for (const child of this.children) {
+            if (child instanceof ZTimeline) {
+                child.destroy();
+            }
+        }
+    }
 }
 //# sourceMappingURL=ZTimeline.js.map

@@ -119,7 +119,10 @@ export class ZScene {
 
             // If the scene uses a texture atlas, load ta.json so we can do
             // CSS-sprite cropping for every img/9slice frame.
-            if (data.atlas === true) {
+            // Default to true when atlas is null/undefined for backward compatibility
+            // (old scenes use an atlas but don't have the atlas flag set).
+            const isAtlas = (data.atlas === null || data.atlas === undefined) ? true : data.atlas;
+            if (isAtlas) {
                 await this._loadAtlas();
             }
 
@@ -783,12 +786,25 @@ export class ZScene {
     }
 
     /**
-     * Removes the scene's stage element from the DOM and clears the scene map.
+     * Stops all playing timelines, removes the stage element from the DOM,
+     * and clears internal maps.
      */
     destroy(): void {
+        this._destroyTimelines(this._sceneStage);
         if (this._sceneStage.el.parentElement) {
             this._sceneStage.el.parentElement.removeChild(this._sceneStage.el);
         }
+        this.resizeMap.clear();
         ZScene.SceneMap.delete(this.sceneId);
+    }
+
+    private _destroyTimelines(container: ZContainer): void {
+        for (const child of container.children) {
+            if (child instanceof ZTimeline) {
+                child.destroy();
+            } else {
+                this._destroyTimelines(child);
+            }
+        }
     }
 }
