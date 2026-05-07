@@ -1,4 +1,5 @@
 import { ZContainer } from './ZContainer';
+import { InstanceData } from './SceneData';
 /**
  * Frame-based animation container.
  * Works identically to the PIXI version: children are keyed by their
@@ -15,8 +16,8 @@ export declare class ZTimeline extends ZContainer {
     func: ((self: ZTimeline) => void) | undefined;
     constructor();
     setCuePoints(cuePoints: Record<number, string>): void;
+    setInstanceData(data: InstanceData, orientation: string): void;
     getFrames(): any;
-    init(): void;
     setFrames(value: any): void;
     removeStateEndEventListener(): void;
     addStateEndEventListener(func: (self: ZTimeline) => void): void;

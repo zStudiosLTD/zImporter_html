@@ -103,6 +103,8 @@ export interface InstanceData extends BaseAssetData {
     portrait: OrientationData;
     landscape: OrientationData;
     attrs?: InstanceAttributes;
+    playOnStart?: boolean;
+    looping?: boolean;
 }
 export interface SpriteData extends BaseAssetData {
     name: string;

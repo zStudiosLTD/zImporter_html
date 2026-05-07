@@ -22,12 +22,15 @@ export class ZTimeline extends ZContainer {
     setCuePoints(cuePoints) {
         this.cuePoints = cuePoints;
     }
+    setInstanceData(data, orientation) {
+        super.setInstanceData(data, orientation);
+        this.looping = data.looping ?? false;
+        if (data.playOnStart) {
+            this.play();
+        }
+    }
     getFrames() {
         return this._frames;
-    }
-    init() {
-        super.init();
-        this.play();
     }
     setFrames(value) {
         this._frames = value;
