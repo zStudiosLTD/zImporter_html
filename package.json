@@ -4,7 +4,7 @@
   "description": "A TypeScript library for importing and managing zStudio scenes as HTML div-based layouts.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "repository": "https://github.com/yonnyzohar/zImporter_HTML",
+  "repository": "https://github.com/zStudiosLTD/zImporter_html",
   "homepage": "https://zstudiosltd.com/",
   "scripts": {
     "build": "tsc",
