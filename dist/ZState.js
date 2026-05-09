@@ -26,16 +26,14 @@ export class ZState extends ZContainer {
         // hide all children; stop any timelines
         for (const child of this.children) {
             child.setVisible(false);
-            if (child instanceof ZTimeline)
-                child.stop();
+            this.stopAllTimelines(child);
         }
         if (chosen) {
             // Bring chosen to the top in the DOM
             chosen.setVisible(true);
             this.el.appendChild(chosen.el);
             this.currentState = chosen;
-            if (chosen instanceof ZTimeline)
-                chosen.play();
+            this.playAllTimelines(chosen);
             return chosen;
         }
         return null;
@@ -45,6 +43,34 @@ export class ZState extends ZContainer {
     }
     getType() {
         return 'ZState';
+    }
+    playAllTimelines(container) {
+        if (container instanceof ZTimeline) {
+            let t = container;
+            t.gotoAndPlay(0);
+        }
+        else {
+            for (let i = 0; i < container.children.length; i++) {
+                let child = container.children[i];
+                if (child instanceof ZContainer) {
+                    this.playAllTimelines(child);
+                }
+            }
+        }
+    }
+    stopAllTimelines(container) {
+        if (container instanceof ZTimeline) {
+            let t = container;
+            t.stop();
+        }
+        else {
+            for (let i = 0; i < container.children.length; i++) {
+                let child = container.children[i];
+                if (child instanceof ZContainer) {
+                    this.stopAllTimelines(child);
+                }
+            }
+        }
     }
 }
 //# sourceMappingURL=ZState.js.map

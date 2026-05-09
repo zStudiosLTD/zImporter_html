@@ -11,5 +11,7 @@ export declare class ZState extends ZContainer {
     setState(str: string): ZContainer | null;
     getAllStateNames(): (string | null)[];
     getType(): string;
+    private playAllTimelines;
+    private stopAllTimelines;
 }
 //# sourceMappingURL=ZState.d.ts.map

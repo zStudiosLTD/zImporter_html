@@ -32,7 +32,7 @@ export class ZState extends ZContainer {
         // hide all children; stop any timelines
         for (const child of this.children) {
             child.setVisible(false);
-            if (child instanceof ZTimeline) child.stop();
+            this.stopAllTimelines(child);
         }
 
         if (chosen) {
@@ -41,7 +41,7 @@ export class ZState extends ZContainer {
             this.el.appendChild(chosen.el);
             this.currentState = chosen;
 
-            if (chosen instanceof ZTimeline) chosen.play();
+            this.playAllTimelines(chosen);
             return chosen;
         }
         return null;
@@ -53,5 +53,37 @@ export class ZState extends ZContainer {
 
     public override getType(): string {
         return 'ZState';
+    }
+
+    private playAllTimelines(container: ZContainer): void {
+        if (container instanceof ZTimeline) {
+            let t = container as ZTimeline;
+            t.gotoAndPlay(0);
+        }
+        else{
+            for(let i = 0; i < container.children.length; i++){
+                let child = container.children[i];
+                if(child instanceof ZContainer){
+                    this.playAllTimelines(child);
+                }
+            }
+        }
+        
+    }
+
+    private stopAllTimelines(container: ZContainer): void {
+        if (container instanceof ZTimeline) {
+            let t = container as ZTimeline;
+            t.stop();
+        }
+        else{
+            for(let i = 0; i < container.children.length; i++){
+                let child = container.children[i];
+                if(child instanceof ZContainer){
+                    this.stopAllTimelines(child);
+                }
+            }
+        }
+        
     }
 }
