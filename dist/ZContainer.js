@@ -53,6 +53,9 @@ export class ZContainer {
     _visible = true;
     _skewX = 0;
     _skewY = 0;
+    // ── Mask ─────────────────────────────────────────────────────────────────
+    mask = null;
+    _maskingTargets = [];
     // ── Interaction ───────────────────────────────────────────────────────────
     interactive = false;
     interactiveChildren = true;
@@ -240,6 +243,13 @@ export class ZContainer {
                 ` skewX(${this._skewX}rad) skewY(${this._skewY}rad)` +
                 ` scale(${this._scaleX},${this._scaleY})` +
                 ` translate(${-px}px,${-py}px)`;
+        if (this._maskingTargets.length > 0)
+            this._updateMaskTargets();
+    }
+    _updateMaskTargets() {
+        for (const target of this._maskingTargets) {
+            target._applyHtmlMask(this);
+        }
     }
     // ─────────────────────────────────────────────────────────────────────────
     // Instance data / orientation
@@ -253,7 +263,141 @@ export class ZContainer {
         if (data.attrs?.fitToScreen !== undefined) {
             this._fitToScreen = data.attrs.fitToScreen;
         }
+        //at this moment the sybling that is masking may not be created yet. so wait. yes it's a hack for now...
+        if (data.mask) {
+            this.addMask(data.mask, 0);
+        }
         this.applyTransform();
+    }
+    addMask(mskName, retry) {
+        if (retry >= 3) {
+            return;
+        }
+        setTimeout(() => {
+            if (this.parent) {
+                const sybling = this.parent.getChildByName(mskName);
+                if (sybling) {
+                    this.mask = sybling;
+                    if (!sybling._maskingTargets.includes(this)) {
+                        sybling._maskingTargets.push(this);
+                    }
+                    // The masker hides itself — its visual shape becomes the clip region.
+                    sybling.el.style.visibility = 'hidden';
+                    sybling.el.style.pointerEvents = 'none';
+                    this._applyHtmlMask(sybling);
+                }
+                else {
+                    this.addMask(mskName, retry + 1);
+                }
+            }
+            else {
+                this.addMask(mskName, retry + 1);
+            }
+        }, 50);
+    }
+    // Compute the bounding box of all visual content in this container's LOCAL space.
+    // Uses CSS style values directly so it works even when the element is hidden.
+    _getLocalBounds() {
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        // Track which children elements belong to ZContainer children (to skip separately)
+        const childEls = new Set(this.children.map(c => c.el));
+        // Direct HTML children (imgs placed by createAsset)
+        for (const node of this.el.children) {
+            const el = node;
+            if (childEls.has(el))
+                continue;
+            const w = parseFloat(el.style.width);
+            const h = parseFloat(el.style.height);
+            if (!(w > 0 && h > 0))
+                continue;
+            const l = parseFloat(el.style.left) || 0;
+            const t = parseFloat(el.style.top) || 0;
+            // img may carry translate(-pivotX, -pivotY) from createAsset's pivot handling
+            const m = /translate\((-?[\d.]+)px,\s*(-?[\d.]+)px\)/.exec(el.style.transform || '');
+            const tx = m ? parseFloat(m[1]) : 0;
+            const ty = m ? parseFloat(m[2]) : 0;
+            const ix = l + tx, iy = t + ty;
+            if (ix < minX)
+                minX = ix;
+            if (ix + w > maxX)
+                maxX = ix + w;
+            if (iy < minY)
+                minY = iy;
+            if (iy + h > maxY)
+                maxY = iy + h;
+        }
+        // ZContainer children — recurse and fold in their transforms
+        for (const child of this.children) {
+            const cb = child._getLocalBounds();
+            if (!cb)
+                continue;
+            const cos = Math.cos(child._rotation);
+            const sin = Math.sin(child._rotation);
+            for (const [lx, ly] of [
+                [cb.minX, cb.minY], [cb.maxX, cb.minY],
+                [cb.maxX, cb.maxY], [cb.minX, cb.maxY],
+            ]) {
+                // Apply child's CSS transform: T(x,y) · rot · scale · T(-pivot)
+                const ux = lx - child._pivotX;
+                const uy = ly - child._pivotY;
+                const rx = cos * ux * child._scaleX - sin * uy * child._scaleY + child._x;
+                const ry = sin * ux * child._scaleX + cos * uy * child._scaleY + child._y;
+                if (rx < minX)
+                    minX = rx;
+                if (rx > maxX)
+                    maxX = rx;
+                if (ry < minY)
+                    minY = ry;
+                if (ry > maxY)
+                    maxY = ry;
+            }
+        }
+        return isFinite(minX) ? { minX, minY, maxX, maxY } : null;
+    }
+    _applyHtmlMask(maskEl) {
+        // Compute the mask element's visual bounds in its own local space,
+        // then transform into the shared parent-local space.
+        const lb = maskEl._getLocalBounds();
+        if (!lb)
+            return;
+        const mcos = Math.cos(maskEl._rotation);
+        const msin = Math.sin(maskEl._rotation);
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        for (const [lx, ly] of [
+            [lb.minX, lb.minY], [lb.maxX, lb.minY],
+            [lb.maxX, lb.maxY], [lb.minX, lb.maxY],
+        ]) {
+            const ux = lx - maskEl._pivotX;
+            const uy = ly - maskEl._pivotY;
+            const rx = mcos * ux * maskEl._scaleX - msin * uy * maskEl._scaleY + maskEl._x;
+            const ry = msin * ux * maskEl._scaleX + mcos * uy * maskEl._scaleY + maskEl._y;
+            if (rx < minX)
+                minX = rx;
+            if (rx > maxX)
+                maxX = rx;
+            if (ry < minY)
+                minY = ry;
+            if (ry > maxY)
+                maxY = ry;
+        }
+        if (!isFinite(minX))
+            return;
+        // Convert parent-local → this element's clip-path local space
+        // by inverting this element's own transform.
+        const cos = Math.cos(-this._rotation);
+        const sin = Math.sin(-this._rotation);
+        const localCorners = [
+            [minX, minY], [maxX, minY], [maxX, maxY], [minX, maxY],
+        ].map(([px, py]) => {
+            const dx = px - this._x;
+            const dy = py - this._y;
+            const rx = cos * dx - sin * dy;
+            const ry = sin * dx + cos * dy;
+            const lx = rx / this._scaleX + this._pivotX;
+            const ly = ry / this._scaleY + this._pivotY;
+            return `${lx}px ${ly}px`;
+        });
+        this.el.style.clipPath = `polygon(${localCorners.join(', ')})`;
     }
     /**
      * Stretches this container to visually cover the entire browser viewport.
@@ -278,7 +422,9 @@ export class ZContainer {
         this._scaleY = 1;
         this._rotation = 0;
         this._applyTransform();
-        const firstChild = this.el.firstElementChild;
+        // querySelector('img') finds the image even when it's nested inside a child
+        // ZContainer div (which has width:0;height:0 and is not itself an img).
+        const firstChild = (this.el.querySelector('img') ?? this.el.firstElementChild);
         if (!firstChild)
             return;
         // Get the frame's natural (authored) dimensions.

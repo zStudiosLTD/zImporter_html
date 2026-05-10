@@ -45,6 +45,8 @@ export declare class ZContainer {
     private _visible;
     private _skewX;
     private _skewY;
+    mask: ZContainer | null;
+    private _maskingTargets;
     interactive: boolean;
     interactiveChildren: boolean;
     /** Typed child list (mirrors PIXI's children array). */
@@ -97,7 +99,11 @@ export declare class ZContainer {
      *   T(x,y) · R(rotation) · S(scaleX,scaleY) · T(-pivotX,-pivotY)
      */
     private _applyTransform;
+    private _updateMaskTargets;
     setInstanceData(data: InstanceData, orientation: string): void;
+    private addMask;
+    private _getLocalBounds;
+    private _applyHtmlMask;
     /**
      * Stretches this container to visually cover the entire browser viewport.
      * Mirrors PIXI's `executeFitToScreen` — positions the container at the
