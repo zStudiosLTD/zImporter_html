@@ -94,12 +94,24 @@ export class ZTimeline extends ZContainer {
             }
         }
     }
+    applyTransform() {
+        super.applyTransform();
+        this.gotoAndStop(this.currentFrame);
+    }
     gotoAndStop(frameNum) {
         this.currentFrame = frameNum;
         if (this._frames == null)
             return;
         for (const k in this._frames) {
-            const frameData = this._frames[k][this.currentFrame];
+            let frameData = this._frames[k][this.currentFrame];
+            if (!frameData) {
+                for (let i = this.currentFrame; i >= 0; i--) {
+                    if (this._frames[k][i]) {
+                        frameData = this._frames[k][i];
+                        break;
+                    }
+                }
+            }
             if (!frameData)
                 continue;
             // `this[k]` is a child ZContainer set by ZScene as `mc[instanceName] = child`
