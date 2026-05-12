@@ -103,43 +103,34 @@ export class ZTimeline extends ZContainer {
         if (this._frames == null)
             return;
         for (const k in this._frames) {
-            let frameData = this._frames[k][this.currentFrame];
-            if (!frameData) {
-                for (let i = this.currentFrame; i >= 0; i--) {
-                    if (this._frames[k][i]) {
-                        frameData = this._frames[k][i];
-                        break;
-                    }
-                }
-            }
-            if (!frameData)
+            let frame = this._frames[k][this.currentFrame];
+            if (!frame)
                 continue;
             // `this[k]` is a child ZContainer set by ZScene as `mc[instanceName] = child`
             const child = this[k];
             if (!child)
                 continue;
-            if (frameData.pivotX != null)
-                child.pivotX = frameData.pivotX;
-            if (frameData.pivotY != null)
-                child.pivotY = frameData.pivotY;
-            if (frameData.scaleX != null)
-                child.scaleX = frameData.scaleX;
-            if (frameData.scaleY != null)
-                child.scaleY = frameData.scaleY;
-            if (frameData.x != null)
-                child.x = frameData.x;
-            if (frameData.y != null)
-                child.y = frameData.y;
-            if (frameData.alpha != null)
-                child.alpha = frameData.alpha;
-            if (frameData.rotation != null)
-                child.rotation = frameData.rotation;
-            // Apply Flash skew: skewY is Flash's X-axis angle, skewX is Y-axis angle.
-            if (frameData.skewY != null) {
-                child.skew.y = frameData.skewY - child.rotation;
+            if (frame.pivotX != null)
+                child.pivotX = frame.pivotX;
+            if (frame.pivotY != null)
+                child.pivotY = frame.pivotY;
+            if (frame.scaleX != null)
+                child.scaleX = frame.scaleX;
+            if (frame.scaleY != null)
+                child.scaleY = frame.scaleY;
+            if (frame.x != null)
+                child.x = frame.x;
+            if (frame.y != null)
+                child.y = frame.y;
+            if (frame.alpha != null)
+                child.alpha = frame.alpha;
+            if (frame.rotation != null)
+                child.rotation = frame.rotation;
+            if (frame.skewY != null) {
+                child.skew.y = frame.skewY - child.rotation;
             }
-            if (frameData.skewX != null) {
-                child.skew.x = child.rotation - frameData.skewX;
+            if (frame.skewX != null) {
+                child.skew.x = child.rotation - frame.skewX;
             }
         }
     }

@@ -468,6 +468,16 @@ export class ZContainer {
         if (!this.currentTransform || !this.resizeable)
             return;
         const t = this.currentTransform;
+        if (!this.currentTransform)
+            return;
+        if (!this.resizeable)
+            return;
+        if (this.parent) {
+            let currentFrame = this.parent.currentFrame;
+            if (currentFrame !== undefined && currentFrame > 0) {
+                return; // do not apply transform if parent timeline is playing
+            }
+        }
         this._x = t.x || 0;
         this._y = t.y || 0;
         this._rotation = t.rotation || 0;
