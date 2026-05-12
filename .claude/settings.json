@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/yonthanzohar/yonny/importers/zImporter_Phaser_Example/dist/assets/robot/**)",
+      "Bash(find /Users/yonthanzohar/yonny/importers -type d | head -20)",
+      "Read(//Users/yonthanzohar/yonny/importers/**)",
+      "Bash(npm run *)",
+      "Bash(python3 -c ' *)"
+    ],
+    "additionalDirectories": [
+      "/Users/yonthanzohar/yonny/importers/zImporter_Phaser/src"
+    ]
+  }
+}
