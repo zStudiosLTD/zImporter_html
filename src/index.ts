@@ -15,3 +15,4 @@ export { ZTextInput } from './ZTextInput';
 export { ZPool } from './ZPool';
 export { ZSpine } from './ZSpine';
 export { ParticleConverter } from './ParticleConverter';
+export { ZAnimatedSprite } from './ZAnimatedSprite';

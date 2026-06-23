@@ -51,6 +51,14 @@ export interface ParticleData extends BaseAssetData {
     name: string;
     emitterConfig: any;
 }
+export interface AnimatedSpriteData extends BaseAssetData {
+    framePaths: string[];
+    fps: number;
+    x: number;
+    y: number;
+    playOnStart?: boolean;
+    looping?: boolean;
+}
 export declare enum AnchorConsts {
     NONE = "none",
     TOP_LEFT = "topLeft",

@@ -295,6 +295,21 @@ export class ZContainer {
         }
 
         this.applyTransform();
+
+        if (data.playOnStart) {
+            for (const child of this.children) {
+                if ((child as any).getType?.() === 'ZAnimatedSprite') {
+                    const animSprite = child as any;
+                    animSprite.loop = data.looping ?? false;
+                    if (!animSprite.loop) {
+                        animSprite.onComplete = () => {
+                            animSprite.gotoAndStop(animSprite.totalFrames - 1);
+                        };
+                    }
+                    animSprite.play();
+                }
+            }
+        }
     }
 
     private addMask(mskName: string, retry:number): void {

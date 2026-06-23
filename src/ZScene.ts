@@ -7,8 +7,8 @@ import { ZSlider } from './ZSlider';
 import { ZTextInput } from './ZTextInput';
 import { ZSpine } from './ZSpine';
 import {
-    AnimTrackData, BaseAssetData, GradientData, InstanceData, NineSliceData,
-    SceneData, SpineData, SpriteData, TemplateData, TextData, TextInputData
+    AnimatedSpriteData, AnimTrackData, BaseAssetData, GradientData, InstanceData,
+    NineSliceData, SceneData, SpineData, SpriteData, TemplateData, TextData, TextInputData
 } from './SceneData';
 
 interface BitmapFontChar {
@@ -22,6 +22,7 @@ interface BitmapFontData {
 }
 import { ZState } from './ZState';
 import { ZToggle } from './ZToggle';
+import { ZAnimatedSprite } from './ZAnimatedSprite';
 
 export type AssetType =
     | 'btn' | 'asset' | 'state' | 'toggle' | 'none'
@@ -560,7 +561,21 @@ export class ZScene {
                 });
             }
 
-            // ── 7. Particle — not supported in HTML ───────────────────────────
+            // ── 7. Animated sprite ───────────────────────────────────────────
+            else if (type === 'animatedSprite') {
+                const animData = childNode as AnimatedSpriteData;
+                const sprite = new ZAnimatedSprite();
+                sprite.name = _name;
+                sprite.animationSpeed = animData.fps / 60;
+                sprite.loop = false;
+                sprite.x = animData.x || 0;
+                sprite.y = animData.y || 0;
+                sprite.setup(animData.framePaths, this.assetBasePath);
+                (mc as any)[_name] = sprite;
+                mc.addChild(sprite);
+            }
+
+            // ── 8. Particle — not supported in HTML ───────────────────────────
             else if (type === 'particle') {
                 console.warn('[ZScene] particle assets are not supported in the HTML renderer.');
             }
