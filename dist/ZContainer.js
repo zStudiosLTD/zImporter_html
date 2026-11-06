@@ -461,12 +461,20 @@ export class ZContainer {
         const coverScale = Math.max(vpW / frameW, vpH / frameH);
         const displayW = frameW * coverScale;
         const displayH = frameH * coverScale;
-        const imgLeft = (vpW - displayW) / 2;
-        const imgTop = (vpH - displayH) / 2;
-        firstChild.style.width = displayW + 'px';
-        firstChild.style.height = displayH + 'px';
-        firstChild.style.left = imgLeft + 'px';
-        firstChild.style.top = imgTop + 'px';
+        // Containers between this one and the image apply their own transforms,
+        // so size the image to end up covering the viewport through them.
+        let nested = new DOMMatrix();
+        for (let el = firstChild.parentElement; el && el !== this.el; el = el.parentElement) {
+            nested = new DOMMatrix(el.style.transform || 'none').multiply(nested);
+        }
+        if (nested.a === 0 || nested.d === 0)
+            return;
+        const coverScaleX = coverScale / nested.a;
+        const coverScaleY = coverScale / nested.d;
+        firstChild.style.width = frameW * coverScaleX + 'px';
+        firstChild.style.height = frameH * coverScaleY + 'px';
+        firstChild.style.left = ((vpW - displayW) / 2 - nested.e) / nested.a + 'px';
+        firstChild.style.top = ((vpH - displayH) / 2 - nested.f) / nested.d + 'px';
         // Atlas CSS-sprite: recompute background-size / position with the
         // uniform coverScale so the frame crops correctly.
         if (firstChild.dataset.atlasFrameW) {
@@ -474,8 +482,8 @@ export class ZContainer {
             const fy = parseFloat(firstChild.dataset.atlasFrameY);
             const tw = parseFloat(firstChild.dataset.atlasTotalW);
             const th = parseFloat(firstChild.dataset.atlasTotalH);
-            firstChild.style.backgroundSize = `${tw * coverScale}px ${th * coverScale}px`;
-            firstChild.style.backgroundPosition = `${-fx * coverScale}px ${-fy * coverScale}px`;
+            firstChild.style.backgroundSize = `${tw * coverScaleX}px ${th * coverScaleY}px`;
+            firstChild.style.backgroundPosition = `${-fx * coverScaleX}px ${-fy * coverScaleY}px`;
         }
     }
     applyTransform() {

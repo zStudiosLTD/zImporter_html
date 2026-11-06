@@ -398,11 +398,12 @@ export class ZScene {
         ZContainer.stageScale = scale;
 
         for (const [mc] of this.resizeMap) {
-            if (mc._fitToScreen) {
-                mc.executeFitToScreen(width, height, offsetX, offsetY, scale);
-            } else {
-                mc.resize(width, height, this.orientation);
-            }
+            if (!mc._fitToScreen) mc.resize(width, height, this.orientation);
+        }
+        // After the loop above, because fitting reads the transforms of the
+        // containers inside, which may have just changed orientation.
+        for (const [mc] of this.resizeMap) {
+            if (mc._fitToScreen) mc.executeFitToScreen(width, height, offsetX, offsetY, scale);
         }
 
         // Second pass: re-apply anchors now that ALL containers in the resize
