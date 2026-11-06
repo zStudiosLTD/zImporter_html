@@ -80,3 +80,9 @@ The public API is identical to `zImporter-PIXI`:
 - `ZUpdatables` — RAF-based animation ticker
 - `ZResizeables` — resize listener registry
 - `ZCuePointsManager` — named cue-point event bus
+
+## AI skills
+
+The [`skills/`](./skills) folder has short guides that teach an AI tool to use this package correctly: setup, components, responsive layout, animation and spawning. Add the folder in zStudio under **Help → AI Skill Libraries**, or point your AI tool at `node_modules/zimporter-html/skills/`.
+
+Usage guide with examples: https://zstudiosltd.com/z-importer/guide

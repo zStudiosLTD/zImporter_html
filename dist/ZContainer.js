@@ -1,3 +1,8 @@
+/** Copies stored transforms so instances of the same template never share them. */
+const cloneOrientation = (data) => data && ({
+    ...data,
+    ...(data.anchorPercentage ? { anchorPercentage: { ...data.anchorPercentage } } : {}),
+});
 /**
  * HTML div–based display object that mirrors the ZContainer interface from
  * the PIXI and Phaser versions of zImporter.
@@ -255,8 +260,8 @@ export class ZContainer {
     // Instance data / orientation
     // ─────────────────────────────────────────────────────────────────────────
     setInstanceData(data, orientation) {
-        this.portrait = data.portrait;
-        this.landscape = data.landscape;
+        this.portrait = cloneOrientation(data.portrait);
+        this.landscape = cloneOrientation(data.landscape);
         this.currentTransform = orientation === 'portrait' ? this.portrait : this.landscape;
         this.name = data.instanceName || '';
         this._props = data;

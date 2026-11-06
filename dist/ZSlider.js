@@ -41,8 +41,11 @@ export class ZSlider extends ZContainer {
     // Public API
     // ─────────────────────────────────────────────────────────────────────────
     setHandlePosition(t) {
-        if (!this.handle || !this.sliderWidth)
+        if (!this.handle)
             return;
+        // The deferred measurement in init() may not have run yet.
+        if (!this.sliderWidth)
+            this.sliderWidth = this._measureTrackWidth();
         const maxX = this.sliderWidth - this._measureHandleWidth();
         this.handle.x = t * maxX;
         this.callback?.(t);
