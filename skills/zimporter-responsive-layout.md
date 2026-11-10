@@ -32,7 +32,14 @@ mc.x = 120; // other orientation unchanged
 ```ts
 const content = mc.get('content') as ZContainer;
 const startY = content.y;
-gsap.to(content, { y: startY - 30, duration: 0.15, yoyo: true, repeat: 1 }); // any tween library works
+// Any tween library works; this hop uses requestAnimationFrame.
+const start = performance.now();
+const hop = (now: number) => {
+  const t = Math.min(1, (now - start) / 300);
+  content.y = startY - 30 * Math.sin(Math.PI * t);
+  if (t < 1) requestAnimationFrame(hop);
+};
+requestAnimationFrame(hop);
 ```
 
 **Anchored elements.** Positions do not stick. Change the anchor (0 to 1), or animate an inner wrapper.
