@@ -21,6 +21,10 @@ Loads the same `placements.json` format produced by zStudio and constructs the s
 | Spine | ❌ not supported |
 | Particles | ❌ not supported |
 
+## Community & Support
+
+Questions, bug reports or something to show off? Join the zImporter channel on the zStudio Discord: https://discord.com/channels/1570547074414547094/1570777267804835931
+
 ## Installation
 
 ```bash
